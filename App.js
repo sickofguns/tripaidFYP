@@ -79,6 +79,20 @@ import FashionScreen from './POI/FashionPage';
 
 const Stack = createStackNavigator();
 
+
+import { initializeApp } from "firebase/app"
+
+const firebaseConfig = {
+  apiKey: 'api-key',
+  authDomain: 'fir-4fyp.firebaseapp.com',
+  databaseURL: 'https://fir-4fyp-default-rtdb.asia-southeast1.firebasedatabase.app/',
+  projectId: 'fir-4fyp',
+};
+
+const app = initializeApp(firebaseConfig)
+console.log(app)
+ console.log("test")
+
 export default function App() {
   return (
     <NavigationContainer>

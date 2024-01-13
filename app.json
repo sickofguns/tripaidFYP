@@ -28,11 +28,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "eas": {
-        "projectId": "fbcb2637-f18e-40d3-acdb-e0e54234475e"
-      }
-    },
+    
     "owner": "tripaid",
     "runtimeVersion": {
       "policy": "appVersion"

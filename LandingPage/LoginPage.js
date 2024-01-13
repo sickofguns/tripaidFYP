@@ -37,6 +37,9 @@ const LoginPageScreen = () => {
     console.log('Password:', password);
     
     // Replace this logic with your actual authentication logic
+    
+
+    
     // For demonstration purposes, let's assume roles are hardcoded after successful login
     //-----const userRole = 'system_admin'; // Replace this with logic to determine the user's role
     
