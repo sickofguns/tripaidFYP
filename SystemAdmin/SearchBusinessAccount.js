@@ -153,7 +153,7 @@ const SearchBusinessScreen = () => {
 
   const navigateToUserProfile = (userId) => {
     // Navigate to the UserProfile screen, passing the userId as a parameter
-    navigation.navigate('User Profile - LOL', { userId });
+    navigation.navigate('User Profile - Business', { userId });
   };
 
 

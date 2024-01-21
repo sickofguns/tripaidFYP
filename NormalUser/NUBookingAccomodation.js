@@ -87,6 +87,12 @@ const NUAccomodationBookingScreen = () => {
 
         // Add other accommodations and their locations here
     };
+
+    // Update the place state based on the selected attraction
+  const handleAttractionChange = (itemValue) => {
+    setSelectedAccommodation(itemValue);
+    setPlace(accommodationLocations[itemValue]);
+  };
       
 
     const [selectedAccommodation, setSelectedAccommodation] = useState('Select Accomodation');
@@ -197,10 +203,7 @@ const NUAccomodationBookingScreen = () => {
     <View style={styles.inputContainer}>
         <Picker
             selectedValue={selectedAccommodation}
-            onValueChange={(itemValue) => {
-                setSelectedAccommodation(itemValue);
-                setLocation(accommodationLocations[itemValue]);
-            }}
+            onValueChange={handleAttractionChange} 
             style={styles.dropdownBox}
             itemStyle={{ fontSize: 16, width: 350 }}
             >

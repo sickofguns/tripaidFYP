@@ -65,6 +65,12 @@ const NUAttractionBookingScreen = () => {
       navigation.navigate('Landing Page')
     };
 
+    // Update the place state based on the selected attraction
+  const handleAttractionChange = (itemValue) => {
+    setSelectedAccommodation(itemValue);
+    setPlace(accommodationLocations[itemValue]);
+  };
+
     const accommodations = [
         { label: 'Marina Bay Sands', value: 'Marina Bay Sands' },
         { label: 'Holiday Inn @ Orchard', value: 'Holiday Inn, Orchard' },
@@ -197,10 +203,7 @@ const NUAttractionBookingScreen = () => {
     <View style={styles.inputContainer}>
         <Picker
             selectedValue={selectedAccommodation}
-            onValueChange={(itemValue) => {
-                setSelectedAccommodation(itemValue);
-                setLocation(accommodationLocations[itemValue]);
-            }}
+            onValueChange={handleAttractionChange} 
             style={styles.dropdownBox}
             itemStyle={{ fontSize: 16, width: 350 }}
             >

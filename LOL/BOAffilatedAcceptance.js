@@ -20,6 +20,12 @@ const BORequestsScreen = () => {
   const [pendingList, setPendingList] = useState([
     { id: 6, username: 'user1', canUpgrade: false },
     { id: 7, username: 'user2', canUpgrade: false },
+    { id: 61, username: 'user1', canUpgrade: false },
+    { id: 71, username: 'user2', canUpgrade: false },
+    { id: 62, username: 'user1', canUpgrade: false },
+    { id: 72, username: 'user2', canUpgrade: false },
+    { id: 63, username: 'user1', canUpgrade: false },
+    { id: 73, username: 'user2', canUpgrade: false },
     // Add more pending users as needed
   ]);
 
@@ -29,6 +35,21 @@ const BORequestsScreen = () => {
     { id: 3, username: 'nu', isLocked: false },
     { id: 4, username: 'bo', isLocked: false },
     { id: 5, username: 'bb', isLocked: false },
+    { id: 11, username: 'sa', isLocked: false },
+    { id: 21, username: 'lol', isLocked: false },
+    { id: 31, username: 'nu', isLocked: false },
+    { id: 41, username: 'bo', isLocked: false },
+    { id: 51, username: 'bb', isLocked: false },
+    { id: 12, username: 'sa', isLocked: false },
+    { id: 22, username: 'lol', isLocked: false },
+    { id: 32, username: 'nu', isLocked: false },
+    { id: 42, username: 'bo', isLocked: false },
+    { id: 52, username: 'bb', isLocked: false },
+    { id: 13, username: 'sa', isLocked: false },
+    { id: 23, username: 'lol', isLocked: false },
+    { id: 33, username: 'nu', isLocked: false },
+    { id: 43, username: 'bo', isLocked: false },
+    { id: 53, username: 'bb', isLocked: false },
   ];
 
   const fetchUsersFromDatabase = async (query) => {
@@ -47,7 +68,7 @@ const BORequestsScreen = () => {
   const handleSearch = async () => {
     try {
       if (searchQuery.trim() === '') {
-        setUserList([]); // Clear the user list
+        setUserList(dummyDatabase); // Assuming dummyDatabase contains all users
         setNoUserFound(false); // Ensure no "No user found" message is displayed
         return; // Exit the function early if the search query is empty
       }
@@ -89,10 +110,12 @@ const BORequestsScreen = () => {
 
   const renderUserItem = ({ item }) => (
     <View style={styles.userItem}>
+      <TouchableOpacity onPress={() => navigateToUserProfile(item.username)}>
       <View style={styles.userInfo}>
-        <Text>{item.username}</Text>
+      <Text style={styles.usernamecontent}>{item.username}</Text>
         {/* Add other user details you want to display */}
       </View>
+      </TouchableOpacity>
       <View style={styles.userIcons}>
         
         <TouchableOpacity onPress={() => handleDeleteUser(item.id, item.username)}>
@@ -101,6 +124,11 @@ const BORequestsScreen = () => {
       </View>
     </View>
   );
+
+  const navigateToUserProfile = (userId) => {
+    navigation.navigate('View Business Profile', { userId });
+};
+
 
   const handleUpgradeUser = (userId, username) => {
     Alert.alert(
@@ -163,10 +191,12 @@ const BORequestsScreen = () => {
   
   const renderPendingItem = ({ item }) => (
     <View style={styles.pendingItem}>
+      <TouchableOpacity onPress={() => navigateToUserProfile(item.username)}>
       <View style={styles.pendingInfo}>
-        <Text>{item.username}</Text>
+      <Text style={styles.usernamecontent}>{item.username}</Text>
         {/* Add other user details you want to display */}
       </View>
+      </TouchableOpacity>
       <View style={styles.pendingIcons}>
         <TouchableOpacity onPress={() => handleUpgradeUser(item.id, item.username)}>
           <MaterialIcons name="check" size={20} color="green" style={[styles.icon, styles.tickIcon]} />
@@ -212,7 +242,7 @@ const BORequestsScreen = () => {
                         />
                 </View>
 
-                <TextInput style={styles.secondaryText}>Business Collaboration Accounts</TextInput>
+                <Text style={styles.secondaryText}>Business Collaboration Accounts</Text>
 
             <View style={styles.userListContainer}>
             {noUserFound ? (
@@ -228,6 +258,7 @@ const BORequestsScreen = () => {
             </View>
 
             <View style={styles.pendingContainer}>
+              
               <Text style={styles.OtherselectText}>Pending Collaboration</Text>
               <FlatList
                 data={pendingList}
@@ -238,14 +269,22 @@ const BORequestsScreen = () => {
             </View>
           
           </View>
+
+          
             {/* Display LOL Count */}
             <View style={styles.rightColumn}>
+            
                   {/* Top Section */}
                   <View style={styles.columnItem}>
-                      <Text style={[styles.columnTextBold, {marginTop: 260}]}>Business Affiliates</Text>
+                      <Text style={[styles.columnTextBold]}>Business Affiliates</Text>
                   {/* Total Personal Account Count */}
                       <Text style={styles.columnTextExtraLarge}>{BOCount}</Text>
                   </View>
+
+                  <TouchableOpacity onPress={navigation.goBack}>
+                        <Text style={styles.backText}>Back</Text>
+                    </TouchableOpacity>
+                    <Text style={{ marginBottom: 20 }}>&copy; 2023 TripAid</Text>
             </View>
 
             <StatusBar style="auto" />
@@ -333,14 +372,23 @@ const styles = StyleSheet.create({
         flex: 1,
     },  
 
-  userListContainer: {
-    flex: 1,
-    width: '100%',
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
+    userListContainer: {
+      flex: 8,
+      width: '100%',
+      marginTop: 20,
+      paddingHorizontal: 20,
+    },
+    
+    pendingContainer: {
+      flex: 8,
+      width: '100%',
+      marginTop: 20,
+      paddingHorizontal: 20,
+      height: 300,
+    },
+    
   userList: {
-    flexGrow: 0,
+    flex: 1,
   },
   userItem: {
     paddingVertical: 10,
@@ -355,11 +403,8 @@ const styles = StyleSheet.create({
   },
 
   rightColumn: {
-    flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: 10,
-
 },
 columnItem: {
   marginBottom: 10,
@@ -370,6 +415,7 @@ columnTextBold: {
     color: '#0A2753',
     fontSize: 20,
     fontWeight: 'bold',
+    marginTop: 10,
 },
 columnTextExtraLarge: {
     color: '#FB7E3C',
@@ -412,13 +458,6 @@ userIcons: {
 icon: {
   marginLeft: 10,
 },
-
-pendingContainer: {
-  flex: 1,
-  width: '100%',
-  marginTop: 20,
-  paddingHorizontal: 20,
-},
 pendingItem: {
   flexDirection: 'row',
   alignItems: 'center',
@@ -439,6 +478,19 @@ tickIcon: {
 },
 crossIcon: {
   marginLeft: 5,
+},
+usernamecontent: {
+  color: '#0A2753',
+  fontSize: 20,
+  fontWeight: '600',
+  marginLeft: 10,
+},
+backText: {
+  fontSize: 13,
+  color: '#757575',
+  marginTop: 10,
+  marginBottom: 10,
+  alignSelf: 'center',
 },
 });
 

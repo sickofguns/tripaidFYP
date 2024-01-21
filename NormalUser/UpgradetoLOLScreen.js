@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TextInput, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -65,8 +65,39 @@ const UpgradetoLOLScreen = () => {
     }
 
     const handleApply = () => {
-      navigation.navigate('Application Received')
+      openDealsModal();
+
     }
+  
+    const togglePolicy = () => {
+      setPolicy(!policy);
+    };
+  
+    const [policy, setPolicy] = useState(false);
+    const [agreeerror, setAgreeError] = useState(false);
+    const [showDealsModal, setShowDealsModal] = useState(false);
+  
+    const openDealsModal = () => {
+      setShowDealsModal(true);
+    };
+  
+    const closeDealsModal = () => {
+      setShowDealsModal(false);
+
+    };
+
+    const handleAgree = () => {
+      if (!policy) {
+        setAgreeError('You must accept the terms and conditions.');
+        return;
+      }
+    
+      console.log('Policy: ', policy);
+      closeDealsModal();
+      navigation.navigate('Application Received');
+      setAgreeError(true);
+    };  
+  
 
     const handlepublish = () => {
         console.log('Title:', title);
@@ -218,6 +249,56 @@ const UpgradetoLOLScreen = () => {
         </View>
         
     <StatusBar style="auto" />
+
+
+    {/* Deals Modal */}
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={showDealsModal}
+      onRequestClose={closeDealsModal} // Add this line
+    >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <MaterialIcons name="people" size={30} color="#FB7E3C" />
+              <Text style={styles.modalHeaderText}>Wanna Become LOL?</Text>
+              <Text style={styles.modaltext}>Terms and Conditions</Text>
+            </View>
+            <View style={styles.modalInnerContainer}>
+              <Text style={styles.policy}>By enrolling as a Local Opinion Leader (LOL), you willingly commit to actively engage in providing insightful feedback, reviews, and well-considered opinions pertaining to local services, businesses, or events. To qualify, adherence to specific criteria is essential, with a paramount emphasis on maintaining honesty and integrity throughout your contributions. Recognizing the importance of confidentiality, rigorous measures are in place to safeguard the anonymity of LOLs when expressing their viewpoints. In appreciation of your valuable input, incentives or rewards may be extended based on predetermined conditions set by the program administrators. Enrolled LOLs are expected to strictly adhere to a defined code of conduct, placing a premium on respectful communication and exercising prudence to avoid potential conflicts of interest. Violations of the prescribed terms, instances of inappropriate behavior, or prolonged periods of inactivity may result in the revocation of LOL status. The feedback shared by enrolled LOLs holds the potential for diverse applications, and any modifications to these terms will be promptly communicated to ensure transparency. Implicit in the act of enrolling in this program is the unequivocal acceptance of these terms and an unwavering commitment to compliance with all pertinent laws and regulations governing such endeavors. For any inquiries or concerns, our dedicated support team is ready to assist and address your queries. Your enrollment in this program not only signifies an endorsement of these terms but also serves as a pledge to contribute responsibly to the local community.</Text>
+            </View>
+
+              <TouchableOpacity onPress={togglePolicy} style={styles.rememberMeContainer}>
+                <View
+                  style={[
+                    styles.checkbox,
+                    {
+                      backgroundColor: policy ? '#ABAAAA' : '#F4F4F4',
+                      borderWidth: policy ? 0 : 1,
+                    },
+                  ]}
+                >
+                  {policy && (
+                    <MaterialIcons name="check" size={14} color="#FFF" />
+                  )}
+                </View>
+                <Text style={styles.agreeText}>I Accept the Terms & Conditions</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.DealsignUpButton} onPress={() => handleAgree({ onClose: closeDealsModal })}>
+                <Text style={styles.buttonText}>Apply</Text>
+              </TouchableOpacity>
+
+              {agreeerror !== '' && <Text style={styles.agreeerrorText}>{agreeerror}</Text>}
+
+          </View>
+          <TouchableOpacity style={styles.closeButton} onPress={closeDealsModal}>
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
     </View>
   );
 };
@@ -523,6 +604,103 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 25,
         marginBottom: 30,
+    },
+    modalBackground: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      backgroundColor: '#030D45',
+      borderRadius: 10,
+      padding: 20,
+      width: 355,
+      alignItems: 'center',
+    },
+    modalHeader: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      marginBottom: 15,
+    },
+    modalHeaderText: {
+      color: '#FB7E3C',
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginLeft: 10,
+      marginTop: 8,
+    },
+    modaltext: {
+      color: '#FB7E3C',
+      fontSize: 16,
+      marginLeft: 10,
+      marginTop: 8,
+    },
+    closeButton: {
+      marginTop: 20,
+    },
+    closeButtonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    modalInnerContainer: {
+      width: 340,
+      borderRadius: 8,
+      backgroundColor: '#FFF',
+      marginBottom: 10,
+      flexGrow: 1,
+    },
+    policy: {
+      color: '#000',
+      fontSize: 13,
+      paddingBottom: 10,
+      paddingLeft: 10,
+      paddingRight: 10,
+      paddingTop: 10,
+      textAlign: 'justify',
+    },
+    agreeerrorText: {
+      color: 'red',
+      marginTop: 15,
+    },
+    DealsignUpButton: {
+      backgroundColor: '#FB7E3C',
+      borderRadius: 5,
+      paddingVertical: 15,
+      paddingHorizontal: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 10,
+    },
+    rememberMeContainer: {
+      // Styles for the Remember me container
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginRight: 100,
+      marginTop: 10,
+    },
+    checkbox: {
+      // Styles for the checkbox
+      width: 14,
+      height: 14,
+      borderWidth: 1,
+      borderColor: '#7A7A7A',
+      marginLeft: 90,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+    },
+    rememberText: {
+      // Styles for the Remember text
+      fontSize: 16,
+      color: '#7A7A7A',
+      marginLeft: 10,
+    },
+    agreeText: {
+      // Styles for the Remember text
+      fontSize: 16,
+      color: '#7A7A7A',
+      marginLeft: 5,
     },
 });
 

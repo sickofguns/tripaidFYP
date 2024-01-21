@@ -23,6 +23,16 @@ const LOLAffilateBOScreen = () => {
     { id: 3, username: 'nu' },
     { id: 4, username: 'bo' },
     { id: 5, username: 'bb' },
+    { id: 11, username: 'sa' },
+    { id: 21, username: 'lol' },
+    { id: 31, username: 'nu' },
+    { id: 41, username: 'bo' },
+    { id: 51, username: 'bb' },
+    { id: 12, username: 'sa' },
+    { id: 22, username: 'lol' },
+    { id: 32, username: 'nu' },
+    { id: 42, username: 'bo' },
+    { id: 52, username: 'bb' },
   ];
 
   const fetchUsersFromDatabase = async (query) => {
@@ -41,7 +51,7 @@ const LOLAffilateBOScreen = () => {
   const handleSearch = async () => {
     try {
       if (searchQuery.trim() === '') {
-        setUserList([]); // Clear the user list
+        setUserList(dummyDatabase); // Assuming dummyDatabase contains all users
         setNoUserFound(false); // Ensure no "No user found" message is displayed
         return; // Exit the function early if the search query is empty
       }
@@ -66,10 +76,12 @@ const LOLAffilateBOScreen = () => {
 
   const renderUserItem = ({ item }) => (
     <View style={styles.userItem}>
+      <TouchableOpacity onPress={() => navigateToUserProfile(item.username)}>
       <View style={styles.userInfo}>
-        <Text>{item.username}</Text>
+      <Text style={styles.usernamecontent}>{item.username}</Text>
         {/* Add other user details you want to display */}
       </View>
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => handleFollowToggle(item.id)}>
         <Text style={[styles.followButton, { backgroundColor: item. isReachOut ? '#030D45' : '#FB7E3C' }]}>
           {item. isReachOut ? 'Pending' : 'Reach Out'}
@@ -77,6 +89,10 @@ const LOLAffilateBOScreen = () => {
       </TouchableOpacity>
     </View>
   );
+
+  const navigateToUserProfile = (userId) => {
+      navigation.navigate('View Business Profile', { userId });
+  };
 
   useEffect(() => {
     // Load all users from the database initially
@@ -121,7 +137,7 @@ const LOLAffilateBOScreen = () => {
           />
         </View>
 
-            <TextInput style={styles.secondaryText}>Top Business Accounts</TextInput>
+            <Text style={styles.secondaryText}>Top Business Accounts</Text>
 
       <View style={styles.userListContainer}>
         {noUserFound ? (
@@ -242,12 +258,14 @@ const styles = StyleSheet.create({
         fontWeight: '700',
     },  
 
-  userListContainer: {
-    flex: 1,
-    width: '100%',
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
+    userListContainer: {
+      flex: 1,
+      width: '100%',
+      marginTop: 20,
+      paddingHorizontal: 20,
+      height: 900,
+      marginBottom: 20,
+    },
   userList: {
     flexGrow: 0,
   },
@@ -334,6 +352,12 @@ userItem: {
     borderRadius: 5,
     backgroundColor: '#FB7E3C',
     color: '#FFF',
+  },
+  usernamecontent: {
+    color: '#0A2753',
+    fontSize: 20,
+    fontWeight: '600',
+    marginLeft: 10,
   },
 });
 

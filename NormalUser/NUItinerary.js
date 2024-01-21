@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
       textAlign: 'center',
     },
     itineraryContainer: {
-        paddingHorizontal: 50,
+        paddingHorizontal: 25,
         paddingTop: 20,
         flexDirection: 'row',
         borderTopWidth: 3,

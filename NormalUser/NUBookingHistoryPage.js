@@ -77,6 +77,12 @@ const NUBookingHistoryScreen = () => {
     };
   };
 
+  const handleViewHistoryContent = (item) => {
+    return () => {
+      navigation.navigate('Normal User View History Booking', { bookingData: item });
+    };
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [userList, setUserList] = useState([
     { id: 1, username: 'sa',  isReachOut: false },
@@ -345,7 +351,7 @@ const NUBookingHistoryScreen = () => {
                     <Text style={styles.subText}>{item.category}</Text>
                   </View>
                   <View style={styles.imageContainer}>
-                    <TouchableOpacity style={styles.arrowContainer} onPress={handleViewContent(item)}>
+                    <TouchableOpacity style={styles.arrowContainer} onPress={handleViewHistoryContent(item)}>
                       <Text style={styles.viewContentText}>View Booking</Text>
                       <MaterialIcons name="keyboard-arrow-right" size={24} color="#FB7E3C" style={{ marginTop: 5 }} />
                     </TouchableOpacity>
