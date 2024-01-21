@@ -18,3 +18,6 @@ To Run Code from Github: (please download the most updated one)
 3. Run this command:
 
   - npm start
+
+**New Changes**
+this version is using Firestore --> can store both text and images
