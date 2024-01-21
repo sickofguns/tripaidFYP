@@ -36,6 +36,7 @@ import SubCategoryRetailScreen from './SystemAdmin/RetailSubCat';
 import SubCategorySnRScreen from './SystemAdmin/SnRSubCat';
 import LOLUserProfilePage from './SystemAdmin/LOLUserProfilePage';
 import NUUserProfilePage from './SystemAdmin/NUUserProfilePage';
+import BOUserProfilePage from './SystemAdmin/BOUserProfilePage';
 import UserSpecificPostScreen from './SystemAdmin/UserViewPost';
 import UserSpecificReviewScreen from './SystemAdmin/UserViewReview';
 import UserSpecificTrailScreen from './SystemAdmin/UserViewTrail';
@@ -58,6 +59,7 @@ import NUAttractionBookingScreen from './NormalUser/NUBookingAttraction';
 import NUFnBBookingScreen from './NormalUser/NUBookingFnB';
 import NUBookingConfirmationScreen from './NormalUser/NUBookingConfirmation';
 import NUSpecificBookingScreen from './NormalUser/NUViewBooking';
+import NUSpecificHistoryBookingScreen from './NormalUser/NUViewHistoryBooking';
 import NUCreateMainScreen from './NormalUser/NUCreatePage';
 import NUNewPostScreen from './NormalUser/NUCreatePost';
 import NUCreateReviewScreen from './NormalUser/NUCreateReview';
@@ -83,6 +85,7 @@ import LOLAttractionBookingScreen from './LOL/LOLBookingAttraction';
 import LOLBookingPaymentScreen from './LOL/LOLBookingPaymentPage';
 import LOLBookingConfirmationScreen from './LOL/LOLBookingConfirmation';
 import LOLSpecificBookingScreen from './LOL/LOLViewBooking';
+import LOLSpecificHistoryBookingScreen from './LOL/LOLViewHistoryBooking';
 import LOLInsightsScreen from './LOL/LOLInsightsPage';
 import LOLCreateMainScreen from './LOL/LOLCreatePage';
 import LOLNewPostScreen from './LOL/LOLCreatePost';
@@ -154,6 +157,7 @@ export default function App() {
         <Stack.Screen name="Retail Sub Category" component={SubCategoryRetailScreen} />
         <Stack.Screen name="User Profile - LOL" component={LOLUserProfilePage} />
         <Stack.Screen name="User Profile - Normal User" component={NUUserProfilePage} />
+        <Stack.Screen name="User Profile - Business" component={BOUserProfilePage} />
         <Stack.Screen name="User Post" component={UserSpecificPostScreen} />
         <Stack.Screen name="User Review" component={UserSpecificReviewScreen} />
         <Stack.Screen name="User Trail" component={UserSpecificTrailScreen} />
@@ -176,6 +180,7 @@ export default function App() {
         <Stack.Screen name="Normal User Booking Payment Page" component={NUBookingPaymentScreen} />
         <Stack.Screen name="Normal User Booking Confirmation Page" component={NUBookingConfirmationScreen} />
         <Stack.Screen name="Normal User View Booking" component={NUSpecificBookingScreen} />
+        <Stack.Screen name="Normal User View History Booking" component={NUSpecificHistoryBookingScreen} />
         <Stack.Screen name="Normal User Create" component={NUCreateMainScreen} />
         <Stack.Screen name="Normal User Create Post" component={NUNewPostScreen} />
         <Stack.Screen name="Normal User Create Review" component={NUCreateReviewScreen} />
@@ -201,6 +206,7 @@ export default function App() {
         <Stack.Screen name="LOL Booking Payment Page" component={LOLBookingPaymentScreen} />
         <Stack.Screen name="LOL Booking Confirmation Page" component={LOLBookingConfirmationScreen} />
         <Stack.Screen name="LOL View Booking" component={LOLSpecificBookingScreen} />
+        <Stack.Screen name="LOL View History Booking" component={LOLSpecificHistoryBookingScreen} />
         <Stack.Screen name="LOL Insights" component={LOLInsightsScreen} />
         <Stack.Screen name="LOL Create" component={LOLCreateMainScreen} />
         <Stack.Screen name="LOL Create Post" component={LOLNewPostScreen} />
