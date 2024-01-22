@@ -136,11 +136,6 @@ const LOLAccomodationBookingScreen = () => {
           Alert.alert('Invalid promo code. Please try again.');
         }
     };
-
-    useEffect(() => {
-      // Update the place state when the location changes
-      setPlace(location);
-    }, [location]); // Run the effect whenever the location changes
   
 
     const handleSearch = () => {

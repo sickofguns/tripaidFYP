@@ -116,6 +116,31 @@ const LOLCreateReviewScreen = () => {
         'East Coast Park Bike Rental',
     ];
 
+    const sightseeingData = [
+      'Marina Bay Sands',
+      'Gardens by the Bay',
+      'Sentosa Island',
+      'Singapore Zoo',
+      'Merlion Park',
+      'Singapore Botanic Gardens',
+      'Singapore Flyer',
+      'Chinatown',
+      'Little India',
+      'Arab Street and Haji Lane',
+      'National Museum of Singapore',
+      'ArtScience Museum',
+      'Singapore Science Centre',
+      'Raffles Hotel',
+      'Singapore River Cruise',
+      'Peranakan Houses in Katong',
+      'East Coast Park',
+      'Fort Canning Park',
+      'Haw Par Villa',
+      'Singapore Cable Car',
+      // Add more sightseeing places as needed
+    ];
+  
+
     const handleImageSelection = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -160,6 +185,9 @@ const LOLCreateReviewScreen = () => {
                 break;
             case 'Activity':
                 data = activityData;
+                break;
+            case 'Sightseeing':
+                data = sightseeingData;
                 break;
             default:
                 data = [];

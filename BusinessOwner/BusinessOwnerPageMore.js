@@ -65,18 +65,31 @@ const BOMoreScreen = () => {
     const handleLogoutPress = () => {
       navigation.navigate('Landing Page')
     }
-    
-    const iconData = [
-        { icon: "person", label: "Profile" },
-        { icon: "message", label: "Message" },
-        { icon: "event", label: "Customer Bookings", onPress: () => navigation.navigate('Customer Bookings') },
-        { icon: "insights", label: "Insights" },
-        { icon: "help", label: "Privacy & Support" },
-        { icon: "business", label: "LOL Affiliate Page" },
-        { icon: "settings", label: "Settings" },
-        { icon: "mail", label: "Contact Us", onPress: () => navigation.navigate('Contact Us') },
-    ];
+   
+    const handleSearch = () => {
+      navigation.navigate('Business Owner Search User');
+    };
 
+    const handleCreate = () => {
+      navigation.navigate('Business Owner Create');
+    }
+  
+    const handleShop = () => {
+      navigation.navigate('Business Owner Shop');
+    }
+
+
+
+    const iconData = [
+      { icon: "person", label: "Profile", onPress: () => navigation.navigate('Business Owner Profile') },
+      { icon: "event", label: "Customer Bookings", onPress: () => navigation.navigate('Customer Bookings') },
+      { icon: "insights", label: "Insights", onPress: () => navigation.navigate('Business Owner Insights') },
+      { icon: "business", label: "LOL Affiliate Page" , onPress: () => navigation.navigate('LOL Affiliate') },
+      { icon: "help", label: "Privacy & Support" , onPress: () => navigation.navigate('Privacy & Support') },
+      { icon: "settings", label: "Settings" , onPress: () => navigation.navigate('Settings') },
+      { icon: "mail", label: "Contact Us", onPress: () => navigation.navigate('Contact Us') },
+    ];
+    
 
     return (
         <View style={styles.container}>
@@ -126,28 +139,28 @@ const BOMoreScreen = () => {
             </View>
             <View style={styles.footer}>
         {/* Footer Container */}
-              <View style={styles.footerContainer}>
+        <View style={styles.footerContainer}>
                 {/* Home */}
                 <TouchableOpacity style={styles.footerItem} onPress={handleHome}>
                   <MaterialIcons name="home" size={32} color="#FFF" />
                   <Text style={styles.footerText}>Home</Text>
                 </TouchableOpacity>
 
-                {/* POI */}
-                <TouchableOpacity style={styles.footerItem} onPress={handlePOI}>
-                  <MaterialIcons name="place" size={32} color="#FFF" />
-                  <Text style={styles.footerText}>POI</Text>
+                {/* Search user */}
+                <TouchableOpacity style={styles.footerItem} onPress={handleSearch}>
+                  <MaterialIcons name="search" size={32} color="#FFF" />
+                  <Text style={styles.footerText}>Search</Text>
                 </TouchableOpacity>
 
                 {/* Middle Circle */}
-                <TouchableOpacity style={styles.middleCircle}>
+                <TouchableOpacity style={styles.middleCircle} onPress={handleCreate}>
                   <View style={styles.circle}>
                     <Text style={styles.plus}>+</Text>
                   </View>
                 </TouchableOpacity>
 
-                {/* Saved */}
-                <TouchableOpacity style={styles.footerItem}>
+                {/* Shop */}
+                <TouchableOpacity style={styles.footerItem} onPress={handleShop}>
                   <MaterialIcons name="shopping-bag" size={32} color="#FFF" />
                   <Text style={styles.footerText}>Shop</Text>
                 </TouchableOpacity>
@@ -297,7 +310,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 50,
     width: 320,
-    marginTop: 20,
+    marginTop: 80,
     justifyContent: 'center', // Center content vertically
     alignItems: 'center', // Center content horizontally
   },

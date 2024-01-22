@@ -8,49 +8,28 @@ const BORequestsScreen = () => {
     const navigation = useNavigation(); // Initialize the navigation object
 
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [userList, setUserList] = useState([
-    { id: 1, username: 'sa', isLocked: false, isFlagged: false },
-    { id: 2, username: 'lol', isLocked: true, isFlagged: true },
-    { id: 3, username: 'nu', isLocked: false, isFlagged: false },
-    { id: 4, username: 'bo', isLocked: true, isFlagged: false },
-    { id: 5, username: 'bb', isLocked: false, isFlagged: true },
-  ]);
-  const [noUserFound, setNoUserFound] = useState(false);
-  const [pendingList, setPendingList] = useState([
-    { id: 6, username: 'user1', canUpgrade: false },
-    { id: 7, username: 'user2', canUpgrade: false },
-    { id: 61, username: 'user1', canUpgrade: false },
-    { id: 71, username: 'user2', canUpgrade: false },
-    { id: 62, username: 'user1', canUpgrade: false },
-    { id: 72, username: 'user2', canUpgrade: false },
-    { id: 63, username: 'user1', canUpgrade: false },
-    { id: 73, username: 'user2', canUpgrade: false },
-    // Add more pending users as needed
-  ]);
-
-  const dummyDatabase = [
-    { id: 1, username: 'sa', isLocked: false },
-    { id: 2, username: 'lol', isLocked: false },
-    { id: 3, username: 'nu', isLocked: false },
-    { id: 4, username: 'bo', isLocked: false },
-    { id: 5, username: 'bb', isLocked: false },
-    { id: 11, username: 'sa', isLocked: false },
-    { id: 21, username: 'lol', isLocked: false },
-    { id: 31, username: 'nu', isLocked: false },
-    { id: 41, username: 'bo', isLocked: false },
-    { id: 51, username: 'bb', isLocked: false },
-    { id: 12, username: 'sa', isLocked: false },
-    { id: 22, username: 'lol', isLocked: false },
-    { id: 32, username: 'nu', isLocked: false },
-    { id: 42, username: 'bo', isLocked: false },
-    { id: 52, username: 'bb', isLocked: false },
-    { id: 13, username: 'sa', isLocked: false },
-    { id: 23, username: 'lol', isLocked: false },
-    { id: 33, username: 'nu', isLocked: false },
-    { id: 43, username: 'bo', isLocked: false },
-    { id: 53, username: 'bb', isLocked: false },
-  ];
+    const [searchQuery, setSearchQuery] = useState('');
+    const [userList, setUserList] = useState([
+      { id: 1, username: 'peishi', isLocked: false, isFlagged: false },
+      { id: 2, username: 'sneakysushi', isLocked: true, isFlagged: true },
+      { id: 3, username: 'denise', isLocked: false, isFlagged: false },
+      { id: 4, username: 'charlie', isLocked: true, isFlagged: false },
+      { id: 5, username: 'tom', isLocked: false, isFlagged: true },
+    ]);
+    const [noUserFound, setNoUserFound] = useState(false);
+    const [pendingList, setPendingList] = useState([
+      { id: 6, username: 'xiaxue', canUpgrade: false },
+      { id: 7, username: 'debbie', canUpgrade: false },
+      // Add more pending users as needed
+    ]);
+  
+    const dummyDatabase = [
+      { id: 1, username: 'peishi', isLocked: false },
+      { id: 2, username: 'sneakysushi', isLocked: false },
+      { id: 3, username: 'denise', isLocked: false },
+      { id: 4, username: 'charlie', isLocked: false },
+      { id: 5, username: 'tom', isLocked: false },
+    ];
 
   const fetchUsersFromDatabase = async (query) => {
     try {

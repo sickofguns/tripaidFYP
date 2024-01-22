@@ -6,34 +6,24 @@ import { useNavigation } from '@react-navigation/native';
 
 const LOLAffilateBOScreen = () => {
     const navigation = useNavigation(); // Initialize the navigation object
-  const [searchQuery, setSearchQuery] = useState('');
-  const [userList, setUserList] = useState([
-    { id: 1, username: 'sa',  isReachOut: false },
-    { id: 2, username: 'lol',  isReachOut: false },
-    { id: 3, username: 'nu',  isReachOut: false },
-    { id: 4, username: 'bo',  isReachOut: false },
-    { id: 5, username: 'bb',  isReachOut: false },
-  ]);
-  const [noUserFound, setNoUserFound] = useState(false);
-
-  // Dummy database of users
-  const dummyDatabase = [
-    { id: 1, username: 'sa' },
-    { id: 2, username: 'lol' },
-    { id: 3, username: 'nu' },
-    { id: 4, username: 'bo' },
-    { id: 5, username: 'bb' },
-    { id: 11, username: 'sa' },
-    { id: 21, username: 'lol' },
-    { id: 31, username: 'nu' },
-    { id: 41, username: 'bo' },
-    { id: 51, username: 'bb' },
-    { id: 12, username: 'sa' },
-    { id: 22, username: 'lol' },
-    { id: 32, username: 'nu' },
-    { id: 42, username: 'bo' },
-    { id: 52, username: 'bb' },
-  ];
+    const [searchQuery, setSearchQuery] = useState('');
+    const [userList, setUserList] = useState([
+      { id: 1, username: 'naomi neo',  isReachOut: false },
+      { id: 2, username: 'jianhao tan',  isReachOut: false },
+      { id: 3, username: 'bellywellyjelly',  isReachOut: false },
+      { id: 4, username: 'nicole choo',  isReachOut: false },
+      { id: 5, username: 'dewychoo',  isReachOut: false },
+    ]);
+    const [noUserFound, setNoUserFound] = useState(false);
+  
+    // Dummy database of users
+    const dummyDatabase = [
+      { id: 1, username: 'naomi neo' },
+      { id: 2, username: 'jianhao tan' },
+      { id: 3, username: 'bellywellyjelly' },
+      { id: 4, username: 'nicole choo' },
+      { id: 5, username: 'dewychoo' },
+    ];
 
   const fetchUsersFromDatabase = async (query) => {
     try {

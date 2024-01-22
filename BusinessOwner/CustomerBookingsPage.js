@@ -1,59 +1,134 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, StatusBar, Modal, Pressable, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Swiper from 'react-native-swiper';
 
-const BOBookingScreen = () => {
-  const [location, setLocation] = useState('');
+// CustomDropdown component
+const CustomDropdown = ({ selectedValue, onValueChange, items }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
 
-    const navigation = useNavigation(); // Add this line to get the navigation object
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [displayedDate, setDisplayedDate] = useState('Today');
+  const handleDropdownPress = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleItemPress = (value) => {
+    onValueChange(value);
+    setShowDropdown(false);
+  };
+
   
-    const handleDateChange = (date) => {
-      if (!isToday(date)) {
-        setDisplayedDate(new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-        setSelectedDate(date);
-      } else {
-        setDisplayedDate('Today');
-        setSelectedDate(date);
-      }
-      // Perform actions or fetch data based on the selected date
-    };
-    
-    const renderDateHeaders = () => {
-      const dateArray = [];
-      for (let i = -2; i <= 2; i++) {
-        const date = new Date(selectedDate);
-        date.setDate(selectedDate.getDate() + i);
-        const isCurrent = isToday(date);
-        const dateFormat = isCurrent
-          ? displayedDate
-          : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        const isSelected =
-          selectedDate.getDate() === date.getDate() &&
-          selectedDate.getMonth() === date.getMonth() &&
-          selectedDate.getFullYear() === date.getFullYear();
-    
-        dateArray.push(
-          <TouchableOpacity
-            key={i}
-            style={[
-              styles.headerDateContainer,
-              isSelected ? styles.selectedDate : null,
-            ]}
-            onPress={() => handleDateChange(date)}
-          >
-            <Text style={[styles.headerDateText, isSelected ? styles.selectedDateText : null]}>
-              {dateFormat}
-            </Text>
-          </TouchableOpacity>
-        );
-      }
-      return dateArray;
-    };
+
+  return (
+    <View style={styles.dropdownContainer}>
+      <TouchableOpacity onPress={handleDropdownPress} style={styles.dropdownHeader}>
+        <Text style={styles.dropdownHeaderText}>{selectedValue}</Text>
+        <MaterialIcons name={showDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} size={24} color="#333" />
+      </TouchableOpacity>
+
+      {showDropdown && (
+        <View style={styles.dropdownList}>
+          {items.map((item) => (
+            <TouchableOpacity
+              key={item.value}
+              style={styles.dropdownItem}
+              onPress={() => handleItemPress(item.value)}
+            >
+              <Text>{item.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+};
+
+const BOBookingScreen = () => {
+  const navigation = useNavigation();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [displayedDate, setDisplayedDate] = useState('Today');
+  const [selectedMonth, setSelectedMonth] = useState(selectedDate.getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(selectedDate.getFullYear());
+
+  const [isMonthYearPickerVisible, setIsMonthYearPickerVisible] = useState(false);
+
+  const handleDateChange = (date) => {
+    if (!isToday(date)) {
+      setDisplayedDate(
+        new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+      );
+      setSelectedDate(date);
+    } else {
+      setDisplayedDate('Today');
+      setSelectedDate(date);
+    }
+  };
+
+  const handleMonthChange = (month) => {
+    setSelectedMonth(month);
+    updateFilteredBookings(month, selectedYear);
+  };
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+    updateFilteredBookings(selectedMonth, year);
+  };
+
+  const updateFilteredBookings = (month, year) => {
+    const filtered = bookings.filter(
+      (booking) =>
+        new Date(booking.date).getMonth() + 1 === month &&
+        new Date(booking.date).getFullYear() === year
+    );
+    setFilteredBookings(filtered);
+  };
+
+  const renderDateHeaders = () => {
+    const dateArray = [];
+    const firstDayOfMonth = new Date(selectedYear, selectedMonth - 1, 1);
+    const lastDayOfMonth = new Date(selectedYear, selectedMonth, 0);
+  
+    for (let i = firstDayOfMonth.getDate(); i <= lastDayOfMonth.getDate(); i++) {
+      const date = new Date(selectedYear, selectedMonth - 1, i);
+      const isCurrent = isToday(date);
+      const dateFormat = isCurrent
+        ? displayedDate
+        : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const isSelected =
+        selectedDate.getDate() === date.getDate() &&
+        selectedDate.getMonth() === date.getMonth() &&
+        selectedDate.getFullYear() === date.getFullYear();
+  
+      dateArray.push(
+        <TouchableOpacity
+          key={i}
+          style={[styles.headerDateContainer, isSelected ? styles.selectedDate : null]}
+          onPress={() => handleDateChange(date)}
+        >
+          <Text style={[styles.headerDateText, isSelected ? styles.selectedDateText : null]}>
+            {dateFormat}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+  
+    return (
+      <View style={styles.headerDateContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {dateArray}
+        </ScrollView>
+      </View>
+    );
+  };
+  
+  const handleToggleMonthYearPicker = () => {
+    setIsMonthYearPickerVisible(!isMonthYearPickerVisible);
+    updateFilteredBookings(selectedMonth, selectedYear);
+  };
+  
+
+
+  
 
 
     const [bookings, setBookings] = useState([
@@ -103,7 +178,6 @@ const BOBookingScreen = () => {
 
 const [filteredBookings, setFilteredBookings] = useState([]);
 
-  // Update filtered bookings based on the selected date
   useEffect(() => {
     const filtered = bookings.filter((booking) => booking.date === selectedDate.toISOString().split('T')[0]);
     setFilteredBookings(filtered);
@@ -144,25 +218,90 @@ const [filteredBookings, setFilteredBookings] = useState([]);
       navigation.navigate('Business Owner');
     };
 
-    const handlePOI = () => {
-      navigation.navigate('Interest');
+    const handleSearch = () => {
+      navigation.navigate('Business Owner Search User');
     };
 
     const handleProfile = () => {
       navigation.navigate('Business Owner More');
     };
+    
+    const handleCreate = () => {
+      navigation.navigate('Business Owner Create');
+    }
+    const handleShop = () => {
+      navigation.navigate('Business Owner Shop');
+    }
 
-
+    // Custom dropdown data for months and years
+    const months = [
+      { label: 'January', value: 1 },
+      { label: 'February', value: 2 },
+      { label: 'March', value: 3 },
+      { label: 'April', value: 4 },
+      { label: 'May', value: 5 },
+      { label: 'June', value: 6 },
+      { label: 'July', value: 7 },
+      { label: 'August', value: 8 },
+      { label: 'September', value: 9 },
+      { label: 'October', value: 10 },
+      { label: 'November', value: 11 },
+      { label: 'December', value: 12 },
+    ];
+  
+    const years = Array.from({ length: 11 }, (_, i) => 2015 + i);
+  
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {renderDateHeaders()}
-                </ScrollView>
-            </View>
+      
 
-            <View style={styles.midContainer}>
+      <View style={styles.container}>
+      {/* Separate View for date headers */}
+      <View>
+        {renderDateHeaders()}
+      </View>
+  
+      {/* Select Month and Year button at the top right */}
+      <TouchableOpacity onPress={handleToggleMonthYearPicker} style={styles.monthYearPickerButton}>
+        <Text style={styles.monthYearPickerButtonText}>Select Month and Year</Text>
+      </TouchableOpacity>
+        <View style={styles.midContainer}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {/* Your other content */}
+            {/* Bookings */}
+            {renderBookings()}
+          </ScrollView>
+  
+          {/* Modal for Month and Year Picker */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isMonthYearPickerVisible}
+            onRequestClose={() => setIsMonthYearPickerVisible(!isMonthYearPickerVisible)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Select Month and Year</Text>
+                {/* Render your custom dropdowns for month and year */}
+                <CustomDropdown
+                  selectedValue={months.find((m) => m.value === selectedMonth)?.label || ''}
+                  onValueChange={handleMonthChange}
+                  items={months}
+                />
+                <CustomDropdown
+                  selectedValue={selectedYear.toString()}
+                  onValueChange={handleYearChange}
+                  items={years.map((y) => ({ label: y.toString(), value: y }))}
+                />
+                <Pressable
+                  style={styles.modalCloseButton}
+                  onPress={() => setIsMonthYearPickerVisible(!isMonthYearPickerVisible)}
+                >
+                  <Text style={styles.modalCloseButtonText}>Close</Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
               {/* Your other content */}
@@ -187,21 +326,21 @@ const [filteredBookings, setFilteredBookings] = useState([]);
                   <Text style={styles.footerText}>Home</Text>
                 </TouchableOpacity>
 
-                {/* POI */}
-                <TouchableOpacity style={styles.footerItem} onPress={handlePOI}>
-                  <MaterialIcons name="place" size={32} color="#FFF" />
-                  <Text style={styles.footerText}>POI</Text>
+                {/* Search user */}
+                <TouchableOpacity style={styles.footerItem} onPress={handleSearch}>
+                  <MaterialIcons name="search" size={32} color="#FFF" />
+                  <Text style={styles.footerText}>Search</Text>
                 </TouchableOpacity>
 
                 {/* Middle Circle */}
-                <TouchableOpacity style={styles.middleCircle}>
+                <TouchableOpacity style={styles.middleCircle} onPress={handleCreate}>
                   <View style={styles.circle}>
                     <Text style={styles.plus}>+</Text>
                   </View>
                 </TouchableOpacity>
 
                 {/* Shop */}
-                <TouchableOpacity style={styles.footerItem}>
+                <TouchableOpacity style={styles.footerItem} onPress={handleShop}>
                   <MaterialIcons name="shopping-bag" size={32} color="#FFF" />
                   <Text style={styles.footerText}>Shop</Text>
                 </TouchableOpacity>
@@ -236,11 +375,56 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     height: 60,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    paddingHorizontal: 10,
   },
+
+  monthYearPickerButton: {
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: '#FB7E3C',
+  },
+
+  monthYearPickerButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+
+  modalContent: {
+    backgroundColor: '#FFF',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
+
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
+  modalCloseButton: {
+    backgroundColor: '#FB7E3C',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+
+  modalCloseButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+
   headerDateContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,

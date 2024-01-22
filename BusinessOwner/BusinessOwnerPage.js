@@ -1,15 +1,203 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 
 
-const BOScreen = () => {
-  const [location, setLocation] = useState('');
 
+const BOScreen = () => {
   const [currentLocation, setCurrentLocation] = useState('Loading...'); // Initialize with a loading message
+  const [location, setLocation] = useState('');
+  const [activeTab, setActiveTab] = useState('Posts'); // Track the active tab
+
+   // Assuming posts are fetched and stored in this array
+   const [posts, setPosts] = useState([
+    {
+      id: 1,
+      imageUrl: require('../assets/advcove.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      location: 'Adventure Cove',
+      caption: 'Fun day out with the family at Singapore Adventure Cove!',
+      likes: 10,
+      comments: [
+          { user: 'Joey', text: 'This is very cool.' },
+          { user: 'Leslie', text: 'How much? I want to go too!' },
+          // ... other comments
+      ],
+  },
+  {
+    id: 2,
+    imageUrl: require('../assets/advcove.jpg'),
+    pfp: require('../assets/LOL.jpg'),
+    username: 'Naomi Neo',
+    timeposted: '2 hours ago',
+    location: 'Adventure Cove',
+    caption: 'Fun day out with the family at Singapore Adventure Cove!',
+    likes: 10,
+    comments: [
+        { user: 'Joey', text: 'This is very cool.' },
+        { user: 'Leslie', text: 'How much? I want to go too!' },
+        // ... other comments
+    ],
+},
+{
+  id: 3,
+  imageUrl: require('../assets/advcove.jpg'),
+  pfp: require('../assets/LOL.jpg'),
+  username: 'Naomi Neo',
+  timeposted: '2 hours ago',
+  location: 'Adventure Cove',
+  caption: 'Fun day out with the family at Singapore Adventure Cove!',
+  likes: 10,
+  comments: [
+      { user: 'Joey', text: 'This is very cool.' },
+      { user: 'Leslie', text: 'How much? I want to go too!' },
+      // ... other comments
+  ],
+},
+    // ... more posts ...
+]);
+
+const [reviews, setReviews] = useState([
+  {
+      id: 1,
+      imageUrl: require('../assets/typebo.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      location: 'Marina Bay',
+      business: 'Merlion',
+      title: 'Scenic Paradise',
+      description: "Nestled at the heart of Singapore's iconic Marina Bay stands a symbol that captures the spirit and grandeur of the Lion City – the majestic Merlion. A mythical creature with the head of a lion and the body of a fish, the Singapore Merlion is not just a tourist attraction; it is a cultural icon that embodies the rich history, strength, and maritime heritage of this vibrant city-state.",
+      likes: 10,
+    },
+    {
+      id: 2,
+      imageUrl: require('../assets/typebo.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      location: 'Marina Bay',
+      business: 'Merlion',
+      title: 'Scenic Paradise',
+      description: "Nestled at the heart of Singapore's iconic Marina Bay stands a symbol that captures the spirit and grandeur of the Lion City – the majestic Merlion. A mythical creature with the head of a lion and the body of a fish, the Singapore Merlion is not just a tourist attraction; it is a cultural icon that embodies the rich history, strength, and maritime heritage of this vibrant city-state.",
+      likes: 10,
+    },
+    {
+      id: 3,
+      imageUrl: require('../assets/typebo.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      location: 'Marina Bay',
+      business: 'Merlion',
+      title: 'Scenic Paradise',
+      description: "Nestled at the heart of Singapore's iconic Marina Bay stands a symbol that captures the spirit and grandeur of the Lion City – the majestic Merlion. A mythical creature with the head of a lion and the body of a fish, the Singapore Merlion is not just a tourist attraction; it is a cultural icon that embodies the rich history, strength, and maritime heritage of this vibrant city-state.",
+      likes: 10,
+    },
+    {
+      id: 4,
+      imageUrl: require('../assets/typebo.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      location: 'Marina Bay',
+      business: 'Merlion',
+      title: 'Scenic Paradise',
+      description: "Nestled at the heart of Singapore's iconic Marina Bay stands a symbol that captures the spirit and grandeur of the Lion City – the majestic Merlion. A mythical creature with the head of a lion and the body of a fish, the Singapore Merlion is not just a tourist attraction; it is a cultural icon that embodies the rich history, strength, and maritime heritage of this vibrant city-state.",
+      likes: 10,
+    },
+  // Add more review objects as needed
+]);
+
+const [trails, setTrails] = useState([
+  {
+      id: 1,
+      imageUrl: require('../assets/typenu.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      title: 'Best travel view? Take a look!',
+      description: "Nestled at the heart of Singapore's iconic Marina Bay stands a symbol that captures the spirit and grandeur of the Lion City – the majestic Merlion. A mythical creature with the head of a lion and the body of a fish, the Singapore Merlion is not just a tourist attraction; it is a cultural icon that embodies the rich history, strength, and maritime heritage of this vibrant city-state.",
+      likes: 10,
+    },
+    {
+      id: 2,
+      imageUrl: require('../assets/typenu.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      title: 'Best travel view? Take a look!',
+      description: "Nestled at the heart of Singapore's iconic Marina Bay stands a symbol that captures the spirit and grandeur of the Lion City – the majestic Merlion. A mythical creature with the head of a lion and the body of a fish, the Singapore Merlion is not just a tourist attraction; it is a cultural icon that embodies the rich history, strength, and maritime heritage of this vibrant city-state.",
+      likes: 10,
+    },
+    {
+      id: 3,
+      imageUrl: require('../assets/typenu.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      title: 'Best travel view? Take a look!',
+      description: "Nestled at the heart of Singapore's iconic Marina Bay stands a symbol that captures the spirit and grandeur of the Lion City – the majestic Merlion. A mythical creature with the head of a lion and the body of a fish, the Singapore Merlion is not just a tourist attraction; it is a cultural icon that embodies the rich history, strength, and maritime heritage of this vibrant city-state.",
+      likes: 10,
+    },
+    {
+      id: 4,
+      imageUrl: require('../assets/typenu.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      title: 'Best travel view? Take a look!',
+      description: "Nestled at the heart of Singapore's iconic Marina Bay stands a symbol that captures the spirit and grandeur of the Lion City – the majestic Merlion. A mythical creature with the head of a lion and the body of a fish, the Singapore Merlion is not just a tourist attraction; it is a cultural icon that embodies the rich history, strength, and maritime heritage of this vibrant city-state.",
+      likes: 10,
+    },
+    {
+      id: 5,
+      imageUrl: require('../assets/typenu.jpg'),
+      pfp: require('../assets/LOL.jpg'),
+      username: 'Naomi Neo',
+      timeposted: '2 hours ago',
+      title: 'Best travel view? Take a look!',
+      description: "Nestled at the heart of Singapore's iconic Marina Bay stands a symbol that captures the spirit and grandeur of the Lion City – the majestic Merlion. A mythical creature with the head of a lion and the body of a fish, the Singapore Merlion is not just a tourist attraction; it is a cultural icon that embodies the rich history, strength, and maritime heritage of this vibrant city-state.",
+      likes: 10,
+    },
+  // Add more review objects as needed
+]);
+
+const promos = [
+  {
+    id: 1,
+    image: require('../assets/Hiltonlandingpage.jpg'),
+    deals: '$10 OFF',
+    type: 'Booking',
+    valid: 'Valid for 1 Year',
+  },
+  {
+    id: 2,
+    image: require('../assets/GBB.jpg'),
+    deals: '25% OFF',
+    type: 'Booking',
+    valid: 'Valid for 6 Months',
+  },
+  {
+    id: 3,
+    image: require('../assets/JUMBO.jpg'),
+    deals: '1 Free Crab',
+    type: 'Dine-in',
+    valid: 'Valid for 1 Month',
+  },
+  {
+    id: 4,
+    image: require('../assets/btvbag.jpg'),
+    deals: 'BOGO',
+    type: 'Bags only',
+    valid: 'Valid for 1 Month',
+  },
+];
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -42,34 +230,185 @@ const BOScreen = () => {
 
     fetchLocation();
   }, []); // Empty dependency array to run the effect only once
-  
-  
-  const navigation = useNavigation(); // Initialize the navigation object
+    const navigation = useNavigation(); // Initialize the navigation object
 
     const handleHome = () => {
       navigation.navigate('Business Owner');
     };
 
-    const handlePOI = () => {
-      navigation.navigate('Interest');
+    const handleSearch = () => {
+      navigation.navigate('Business Owner Search User');
     };
 
     const handleProfile = () => {
       navigation.navigate('Business Owner More');
     };
     
-    
-    // Assuming posts are fetched and stored in this array
-    const [posts, setPosts] = useState([
-      { id: 1, title: 'Post 1', description: 'Description for post 1' },
-      { id: 2, title: 'Post 2', description: 'Description for post 2' },
-      { id: 3, title: 'Post 3', description: 'Description for post 3' },
-      { id: 4, title: 'Post 4', description: 'Description for post 4' },
-      { id: 5, title: 'Post 5', description: 'Description for post 5' },
-      { id: 6, title: 'Post 6', description: 'Description for post 6' },
+    const handleCreate = () => {
+      navigation.navigate('Business Owner Create');
+    }
+    const handleShop = () => {
+      navigation.navigate('Business Owner Shop');
+    }
 
-      // ... more posts ...
-  ]);
+    //each tab shows what content
+    const renderContent = () => {
+      if (activeTab === 'Posts') {
+        return (
+          <View style={styles.postsContainer}>
+            {posts.map((post, index) => (
+              <View key={post.id} style={styles.instagramPostContainer}>
+                <Image style={styles.postImage} source={post.imageUrl} />
+      
+                <View style={styles.postContent}>
+                  <View style={styles.userInfo}>
+                    <Image style={styles.userAvatar} source={post.pfp} />
+                    <View>
+                      <Text style={styles.userName}>{post.username}</Text>
+                      <Text style={styles.postTime}>{post.timeposted}</Text>
+                      <View style={styles.header}>
+                        <MaterialIcons name="location-on" size={14} color="#000" />
+                        <Text style={styles.postLocation}>{post.location}</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <Text style={styles.postTitle}>{post.caption}</Text>
+      
+                  {/* Likes */}
+                  <TouchableOpacity
+                    style={styles.interactionButton}
+                    onPress={() => handleLike(index)}
+                  >
+                    <MaterialIcons
+                      name={likedPosts[index] ? 'favorite' : 'favorite-border'}
+                      size={24}
+                      color={likedPosts[index] ? 'red' : '#333'}
+                    />
+                    <Text style={styles.interactionText}>Like</Text>
+                  </TouchableOpacity>
+      
+                  {/* Comment section */}
+                  <View style={styles.commentSection}>
+                    {/* Existing comments */}
+                    {comments[index].map((comment, commentIndex) => (
+                      <View key={commentIndex}>
+                        <Text style={styles.commentText}>
+                          {comment.username}: {comment.text}
+                        </Text>
+                      </View>
+                    ))}
+      
+                    {/* Input field for adding new comments */}
+                    <View style={styles.commentInput}>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Add a comment..."
+                        onChangeText={(text) => setNewComment(text)}
+                        value={newComment}
+                      />
+                      <TouchableOpacity
+                        style={styles.commentButton}
+                        onPress={() => {
+                          handleAddComment(index, newComment);
+                          setNewComment(''); // Clear the input after adding the comment
+                        }}
+                      >
+                        <Text style={styles.commentButtonText}>Comment</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+        );      
+      } else if (activeTab === 'Reviews') {
+        return (
+          <View style={styles.postsContainer}>
+            {reviews.map((review, index) => (
+                        <View key={review.id} style={styles.instagramPostContainer}>
+                    <Image style={styles.postImage} source={review.imageUrl}/>
+                    <View style={styles.postContent}>
+                        <View style={styles.userInfo}>
+                            <Image style={styles.userAvatar} source={review.pfp}/>
+                            <View>
+                                <Text style={styles.userName}>{review.username}</Text>
+                                <Text style={styles.postTime}>{review.timeposted}</Text>
+                                <View style={styles.header}>
+                                  <MaterialIcons name="location-on" size={14} color="#000" />
+                                  <Text style={styles.postLocation}> {review.location}</Text>
+                                </View>
+                                <View style={styles.header}>
+                                  <MaterialIcons name="business" size={14} color="#000" />
+                                  <Text style={styles.postLocation}> {review.business}</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <Text style={styles.postTitle}>{review.title}</Text>
+                        <Text style={styles.postDescription}>{review.description}</Text>
+
+
+                       {/* Likes */}
+                        <TouchableOpacity
+                          style={styles.interactionButton}
+                          onPress={() => handleLike(index)}
+                        >
+                          <MaterialIcons
+                            name={likedPosts[index] ? 'favorite' : 'favorite-border'}
+                            size={24}
+                            color={likedPosts[index] ? 'red' : '#333'}
+                          />
+                          <Text style={styles.interactionText}>Like</Text>
+                        </TouchableOpacity>
+
+                      </View>
+                      </View>
+                    ))}
+          </View>
+        );
+      } else if (activeTab === 'Trails') {
+        return (
+          <View style={styles.postsContainer}>
+            {trails.map((trail, index) => (
+                        <TouchableOpacity key={trail.id} style={styles.instagramPostContainer} onPress={handleViewTrail}>
+                    <Image style={styles.postImage} source={trail.imageUrl}/>
+                    <View style={styles.postContent}>
+                        <View style={styles.userInfo}>
+                            <Image style={styles.userAvatar} source={trail.pfp}/>
+                            <View>
+                                <Text style={styles.userName}>{trail.username}</Text>
+                                <Text style={styles.postTime}>{trail.timeposted}</Text>
+                            </View>
+                        </View>
+                        <Text style={styles.postTitle}>{trail.title}</Text>
+                        <Text style={styles.postDescription}>{trail.description}</Text>
+
+
+                       {/* Likes */}
+                        <TouchableOpacity
+                          style={styles.interactionButton}
+                          onPress={() => handleLike(index)}
+                        >
+                          <MaterialIcons
+                            name={likedPosts[index] ? 'favorite' : 'favorite-border'}
+                            size={24}
+                            color={likedPosts[index] ? 'red' : '#333'}
+                          />
+                          <Text style={styles.interactionText}>Like</Text>
+                        </TouchableOpacity>
+
+                      </View>
+                      </TouchableOpacity>
+                    ))}
+          </View>
+        );
+      } 
+    };
+   
+
+    const handleViewTrail = () => {
+      navigation.navigate('User Trail');
+    };
 
   const [likedPosts, setLikedPosts] = useState(Array(posts.length).fill(false));
 
@@ -80,6 +419,19 @@ const BOScreen = () => {
   };
 
 
+// Define state to hold the comments for each post
+const [comments, setComments] = useState(Array(posts.length).fill([]));
+const [newComment, setNewComment] = useState('');
+
+// Assuming username is stored in state
+const [username, setUsername] = useState('Naomi Neo'); // Set the initial username
+
+const handleAddComment = (index, newComment) => {
+  const updatedComments = [...comments];
+  const newCommentObj = { username: username, text: newComment };
+  updatedComments[index] = [...updatedComments[index], newCommentObj];
+  setComments(updatedComments);
+};
 
     return (
         <View style={styles.container}>
@@ -93,51 +445,35 @@ const BOScreen = () => {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.midContainer}>
 
-              <Text style={styles.mainText}>Explore</Text>
+              <Text style={styles.mainText}>Explore Page</Text>
+              <Text style={styles.OtherselectText}>What do you want to explore?</Text>
 
-              {/* Instagram Post Containers */}
-              {posts.map((post, index) => (
-                        <View key={post.id} style={styles.instagramPostContainer}>
-                    <Image source={require('../assets/beach.jpg')} style={styles.postImage} />
-                    <View style={styles.postContent}>
-                        <View style={styles.userInfo}>
-                            <Image source={require('../assets/LOL.jpg')} style={styles.userAvatar} />
-                            <View>
-                                <Text style={styles.userName}>Naomi Neo</Text>
-                                <Text style={styles.postTime}>Posted 2 hours ago</Text>
-                                <View style={styles.header}>
-                                  <MaterialIcons name="location-on" size={14} color="#000" />
-                                  <Text style={styles.postLocation}>Sentosa Beach, Singapore</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <Text style={styles.postTitle}>Beautiful Destination</Text>
-                        <Text style={styles.postDescription}>
-                            Stunning view of the beach at sunset. Fine City! Fun at Sentosa Beach.
-                        </Text>
-                        <View style={styles.postInteractions}>
-                            <TouchableOpacity
-                                style={styles.interactionButton}
-                                onPress={() => handleLike(index)} // Pass index of the post to handleLike function
-                            >
-                                <MaterialIcons
-                                    name={likedPosts[index] ? 'favorite' : 'favorite-border'}
-                                    size={24}
-                                    color={likedPosts[index] ? 'red' : '#333'}
-                                />
-                                <Text style={styles.interactionText}>Like</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.interactionButton}>
-                                <MaterialIcons name="mode-comment" size={24} color="#333" />
-                                <Text style={styles.interactionText}>Comment</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-                ))}
+                {/* Toggle buttons container */}
+      <View style={styles.toggleButtons}>
+        <TouchableOpacity
+          style={[styles.toggleButton, activeTab === 'Posts' && styles.activeButton]}
+          onPress={() => setActiveTab('Posts')}
+        >
+          <Text style={styles.toggleButtonText}>Posts</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.toggleButton, activeTab === 'Reviews' && styles.activeButton]}
+          onPress={() => setActiveTab('Reviews')}
+        >
+          <Text style={styles.toggleButtonText}>Reviews</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.toggleButton, activeTab === 'Trails' && styles.activeButton]}
+          onPress={() => setActiveTab('Trails')}
+        >
+          <Text style={styles.toggleButtonText}>Trails</Text>
+        </TouchableOpacity>
+       
+      </View>
 
-                
-                
+      {/* Render content based on the active tab */}
+      {renderContent()}
+
 
 
                 
@@ -162,21 +498,21 @@ const BOScreen = () => {
                   <Text style={styles.footerText}>Home</Text>
                 </TouchableOpacity>
 
-                {/* POI */}
-                <TouchableOpacity style={styles.footerItem} onPress={handlePOI}>
-                  <MaterialIcons name="place" size={32} color="#FFF" />
-                  <Text style={styles.footerText}>POI</Text>
+                {/* Search user */}
+                <TouchableOpacity style={styles.footerItem} onPress={handleSearch}>
+                  <MaterialIcons name="search" size={32} color="#FFF" />
+                  <Text style={styles.footerText}>Search</Text>
                 </TouchableOpacity>
 
                 {/* Middle Circle */}
-                <TouchableOpacity style={styles.middleCircle}>
+                <TouchableOpacity style={styles.middleCircle} onPress={handleCreate}>
                   <View style={styles.circle}>
                     <Text style={styles.plus}>+</Text>
                   </View>
                 </TouchableOpacity>
 
                 {/* Shop */}
-                <TouchableOpacity style={styles.footerItem}>
+                <TouchableOpacity style={styles.footerItem} onPress={handleShop}>
                   <MaterialIcons name="shopping-bag" size={32} color="#FFF" />
                   <Text style={styles.footerText}>Shop</Text>
                 </TouchableOpacity>
@@ -190,12 +526,52 @@ const BOScreen = () => {
           
         </View>
         
+        
     <StatusBar style="auto" />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  OtherselectText: {
+    color: '#0A2753',
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  postsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 5,
+  },
+  commentSection: {
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  commentText: {
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  commentInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+  commentButton: {
+    paddingHorizontal: 10,
+  },
+  commentButtonText: {
+    color: '#0066FF',
+    fontWeight: 'bold',
+  },
     container: {
       flex: 1,
       backgroundColor: '#FFF',
@@ -210,8 +586,6 @@ const styles = StyleSheet.create({
     },
     header: {
       flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     headerText: {
       fontSize: 14,
@@ -308,7 +682,7 @@ const styles = StyleSheet.create({
         color: '#093D89',
         fontSize: 32,
         fontWeight: 'bold',
-        marginBottom: 30,
+        marginBottom: 10,
         textAlign: 'center',
     },
 
@@ -324,6 +698,7 @@ const styles = StyleSheet.create({
       shadowRadius: 4.65,
       elevation: 6,
       marginBottom: 20,
+      width: '100%',
   },
   postImage: {
       width: 'auto',
@@ -375,12 +750,160 @@ postInteractions: {
 interactionButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 5,
 },
 interactionText: {
     marginLeft: 5,
     color: '#333',
 },
-    
+toggleButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    backgroundColor: '#030D45',
+  },
+  toggleButton: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  activeButton: {
+    borderBottomColor: '#FB7E3C',
+    borderBottomWidth: 5, 
+  },
+  toggleButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  scrollContainerPromo: {
+    flexGrow: 0,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingBottom: 10, // Add some paddingBottom if needed
+    width: 300,
+  },
+  fixedHeightContainer: {
+    height: 490, // Adjust the height as needed
+  },
+  dealsImage: {
+    width: 60,  // Adjust the width as needed
+    height: 60, // Adjust the height as needed
+    resizeMode: 'cover',
+    marginLeft: 30,
+    marginTop: 25,
+  },
+  dottedLine: {
+    borderStyle: 'dotted',
+    borderWidth: 1,
+    borderRadius: 1,
+    borderColor: 'rgba(102, 102, 102, 0.2)',
+    height: 85,
+    width: 0,
+    marginLeft: 110,
+    marginTop: -75,
+  },
+  modalContent: {
+    backgroundColor: '#030D45',
+    borderRadius: 8,
+    padding: 20,
+    width: 355,
+    alignItems: 'center',
+  },
+  modalHeader: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  modalHeaderText: {
+    color: '#FB7E3C',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    marginTop: 8,
+  },
+  modaltext: {
+    color: '#FB7E3C',
+    fontSize: 16,
+    marginLeft: 10,
+    marginTop: 8,
+  },
+  closeButton: {
+    marginTop: 20,
+  },
+  closeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalInnerContainer: {
+    width: 300,
+    height: 104,
+    borderRadius: 8,
+    backgroundColor: '#FFF',
+    marginBottom: 20
+  },
+  halfCircleLeft: {
+    position: 'absolute',
+    left: -10,
+    top: '50%',
+    marginTop: -8, // half the height of the half circle
+    width: 32,
+    height: 20,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    backgroundColor: '#030D45',
+    transform: [{ rotate: '90deg' }], // Rotate the half circle
+  },
+  halfCircleRight: {
+    position: 'absolute',
+    right: -10,
+    top: '50%',
+    marginTop: -8, // half the height of the half circle
+    width: 32,
+    height: 20,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    backgroundColor: '#030D45',
+    transform: [{ rotate: '-90deg' }], // Rotate the half circle
+  },
+  dealsTop: {
+    color: '#000',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 126,
+    marginTop: -75,
+  },
+  dealsMid: {
+    color: '#000',
+    fontSize: 16,
+    marginLeft: 126,
+    marginTop: 4,
+  },
+  dealsBot: {
+    color: 'rgba(0, 0, 0, 0.3)',
+    fontSize: 10,
+    marginLeft: 126,
+    marginTop: 6,
+  },
+  redeemButton: {
+    position: 'absolute',
+    top: 70,
+    right: 0,
+    padding: 5,
+    backgroundColor: '#FB7E3C',
+    borderRadius: 10,
+    marginTop: 5, // Adjust the spacing as needed
+    marginRight: 5,
+  },
+  redeemButtonText: {
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  
 });
 
 export default BOScreen;

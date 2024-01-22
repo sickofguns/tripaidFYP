@@ -140,11 +140,6 @@ const LOLFnBBookingScreen = () => {
     const handleSearch = () => {
       navigation.navigate('LOL Search User')
     };
-    
-    useEffect(() => {
-      // Update the place state when the location changes
-      setPlace(location);
-    }, [location]); // Run the effect whenever the location changes
   
 
     const itineraryData = [

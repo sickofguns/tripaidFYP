@@ -99,6 +99,96 @@ const LandingPageScreen = () => {
       place: 'Adventure Cove Waterpark',
       location: 'Sentosa Island',
     },
+    {
+      id: 4,
+      image: require('../assets/buddha.jpg'),
+      place: 'Buddha Tooth Relic Temple',
+      location: 'South Bridge Road',
+    },
+    {
+      id: 5,
+      image: require('../assets/littleindia.jpg'),
+      place: 'Little India',
+      location: 'Little India',
+    },
+    {
+      id: 6,
+      image: require('../assets/HAJI.jpg'),
+      place: 'Haji Lane',
+      location: 'Haji Lane',
+    },
+    {
+      id: 7,
+      image: require('../assets/ASH.jpg'),
+      place: 'Ann Siang Hill',
+      location: 'Chinatown',
+    },
+    {
+      id: 8,
+      image: require('../assets/pond.jpg'),
+      place: 'Lotus Pond at Art Science Museum',
+      location: 'Bayfront',
+    },
+    {
+      id: 9,
+      image: require('../assets/fullerton.jpg'),
+      place: 'The Fullerton Hotel',
+      location: 'Fullerton Square',
+    },
+    {
+      id: 10,
+      image: require('../assets/HPV.jpg'),
+      place: 'Haw Par Villa',
+      location: 'Pasir Panjang',
+    },
+    {
+      id: 11,
+      image: require('../assets/NGS.jpg'),
+      place: 'National Gallery Singapore',
+      location: 'City Hall',
+    },
+    {
+      id: 12,
+      image: require('../assets/RobertsonQuay.jpg'),
+      place: 'The Quayside at Robertson Quay',
+      location: 'Robertson Quay',
+    },
+    {
+      id: 13,
+      image: require('../assets/typebo.jpg'),
+      place: 'The Merlion',
+      location: 'Merlion Park',
+    },
+    {
+      id: 14,
+      image: require('../assets/uss.jpg'),
+      place: 'Universal Studios Singapore',
+      location: 'Resorts World Sentosa',
+    },
+    {
+      id: 15,
+      image: require('../assets/zoo.jpg'),
+      place: 'Singapore Zoo',
+      location: 'Mandai Wildlife Reserve',
+    },
+    {
+      id: 16,
+      image: require('../assets/botanic.jpg'),
+      place: 'Singapore Botanic Gardens',
+      location: 'Cluny Road',
+    },
+    {
+      id: 17,
+      image: require('../assets/flyer.png'),
+      place: 'Singapore Flyer',
+      location: 'Raffles Avenue',
+    },
+    {
+      id: 18,
+      image: require('../assets/esplanade.jpg'),
+      place: 'Esplanade Concert Hall',
+      location: 'Esplanade Drive',
+    },
     // Add more places as needed
   ];
 
@@ -275,7 +365,7 @@ const LandingPageScreen = () => {
                 <View style={styles.dottedLine}></View>
                 <Text style={styles.dealsTop}>{promo.deals}</Text>
                 <Text style={styles.dealsMid}>{promo.type}</Text>
-                <Text style={styles.dealsBot}>{promo.valid}</Text>
+                <Text style={styles.dealsBot}>{promo.valid}{'\n'}*T&C applies</Text>
               </View>
             ))}
             

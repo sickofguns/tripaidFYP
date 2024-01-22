@@ -371,7 +371,7 @@ const promos = [
         return (
           <View style={styles.postsContainer}>
             {trails.map((trail, index) => (
-                        <View key={trail.id} style={styles.instagramPostContainer}>
+                        <TouchableOpacity key={trail.id} style={styles.instagramPostContainer} onPress={handleViewTrail}>
                     <Image style={styles.postImage} source={trail.imageUrl}/>
                     <View style={styles.postContent}>
                         <View style={styles.userInfo}>
@@ -399,65 +399,17 @@ const promos = [
                         </TouchableOpacity>
 
                       </View>
-                      </View>
+                      </TouchableOpacity>
                     ))}
           </View>
         );
-      } else if (activeTab === 'Promos') {
-        return (
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <MaterialIcons name="whatshot" size={30} color="#FB7E3C" />
-                <Text style={styles.modalHeaderText}>Exclusive Deals</Text>
-              </View>
-      
-              <ScrollView >
-                <View style={styles.scrollContainerPromo}>
-                  {promos.map((promo) => (
-                    <View style={styles.modalInnerContainer} key={promo.id}>
-                      <View style={styles.halfCircleLeft}></View>
-                      <View style={styles.halfCircleRight}></View>
-                      <Image source={promo.image} style={styles.dealsImage} />
-                      <View style={styles.dottedLine}></View>
-                      <Text style={styles.dealsTop}>{promo.deals}</Text>
-                      <Text style={styles.dealsMid}>{promo.type}</Text>
-                      <Text style={styles.dealsBot}>{promo.valid}</Text>
-
-                      {/* Redeem Button */}
-                      <TouchableOpacity
-                        style={styles.redeemButton}
-                        onPress={() => handleRedeem(promo.id, promo.deals)}
-                        disabled={redeemedStates[promo.id]} // Disable the button if it's already redeemed
-                      >
-                        <Text style={styles.redeemButtonText}>
-                          {redeemedStates[promo.id] ? 'Redeemed' : 'Collect'}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </View>
-              </ScrollView>
-            </View>
-        );
-      }
-    };
-
-    const [redeemedStates, setRedeemedStates] = useState(false);
-
-    const handleRedeem = (promoId, dealName) => {
-      if (!redeemedStates[promoId]) {
-        Alert.alert('Collection Success', `You have successfully collected ${dealName}.`);
-  
-        // Your redeem logic goes here
-  
-        // Update the state to mark this promo as redeemed
-        setRedeemedStates((prevStates) => ({
-          ...prevStates,
-          [promoId]: true,
-        }));
-      }
+      } 
     };
    
+
+    const handleViewTrail = () => {
+      navigation.navigate('User Trail');
+    };
 
   const [likedPosts, setLikedPosts] = useState(Array(posts.length).fill(false));
 
@@ -517,12 +469,7 @@ const handleAddComment = (index, newComment) => {
         >
           <Text style={styles.toggleButtonText}>Trails</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.toggleButton, activeTab === 'Promos' && styles.activeButton]}
-          onPress={() => setActiveTab('Promos')}
-        >
-          <Text style={styles.toggleButtonText}>Promotions</Text>
-        </TouchableOpacity>
+       
       </View>
 
       {/* Render content based on the active tab */}
