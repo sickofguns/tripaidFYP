@@ -24,6 +24,7 @@ import BOSubCategoryHospitalityScreen from './UnregisteredUser/HospitalityBOSubC
 import BOSubCategoryFnbScreen from './UnregisteredUser/FnBBOSubCat';
 import BOSubCategoryRetailScreen from './UnregisteredUser/RetailBOSubCat';
 import BOSubCategorySnRScreen from './UnregisteredUser/SnRBOSubCat';
+import AboutYourselfLOLScreen from './UnregisteredUser/AboutYourselfLOLScreen';
 //system admin
 import SABusinessCategoryScreen from './SystemAdmin/SABusinessCategory';
 import SearchBusinessScreen from './SystemAdmin/SearchBusinessAccount';
@@ -97,9 +98,27 @@ import LOLEditReviewScreen from './LOL/LOLEditReview';
 import LOLSpecificTrailScreen from './LOL/LOLViewTrail';
 import LOLEditTrailScreen from './LOL/LOLEditTrail';
 //business owner
-import BOScreen from './BusinessOwner/BusinessOwnerPage';
 import BOMoreScreen from './BusinessOwner/BusinessOwnerPageMore';
+import BOListingScreen from './BusinessOwner/BusinessOwnerListing';
+import BOScreen from './BusinessOwner/BusinessOwnerPage';
+import BOProfilePage from './BusinessOwner/BusinessOwnerProfilePage';
 import BOBookingScreen from './BusinessOwner/CustomerBookingsPage';
+import BOCreateMainScreen from './BusinessOwner/BOCreatePage';
+import BONewListingScreen from './BusinessOwner/BusinessOwnerCreateListing';
+import BOEditListingScreen from './BusinessOwner/BusinessOwnerEditListing';
+import BOSpecificListingScreen from './BusinessOwner/BusinessOwnerViewListing';
+import BOCreatePromotion from './BusinessOwner/BusinessOwnerCreatePromotion';
+import BOSpecificPromotionScreen from './BusinessOwner/BusinessOwnerViewPromotion';
+import BOPromotionScreen from './BusinessOwner/BusinessOwnerPromotion';
+import BOEditPromotionScreen from './BusinessOwner/BusinessOwnerEditPromotion';
+import BOSpecificReviewScreen from './BusinessOwner/BusinessOwnerViewReview';
+import BOLOLAffiliateScreen from './BusinessOwner/BusinessOwnerLOLAffiliatePage';
+import BOLOLAffiliateRequestScreen from './BusinessOwner/BusinessOwnerLOLAffiliatePageRequest';
+import BOShop from './BusinessOwner/BusinessOwnerShop';
+import BOUpcoming from './BusinessOwner/BusinessOwnerUpcoming';
+import BOSpecificUpcomingListingScreen from './BusinessOwner/BusinessOwnerViewUpcomingListing';
+import BOSearchUserScreen from './BusinessOwner/BOSearchPage';
+import BOInsightsScreen from './BusinessOwner/BOInsightsPage';
 //others
 import CUScreen from './Others/ContactUsPage';
 import PSScreen from './Others/PrivacyandSupport';
@@ -145,6 +164,7 @@ export default function App() {
         <Stack.Screen name="Business Registration SubCategory - Food & Beverage" component={BOSubCategoryFnbScreen} />
         <Stack.Screen name="Business Registration SubCategory - Sports & Recreation" component={BOSubCategorySnRScreen} />
         <Stack.Screen name="Business Registration SubCategory - Retail" component={BOSubCategoryRetailScreen} />
+        <Stack.Screen name="About Yourself" component={AboutYourselfLOLScreen} />
 
         <Stack.Screen name="Business Category" component={SABusinessCategoryScreen} />
         <Stack.Screen name="Business Accounts" component={SearchBusinessScreen} />
@@ -219,8 +239,26 @@ export default function App() {
         <Stack.Screen name="LOL Edit Trail" component={LOLEditTrailScreen} />
 
         <Stack.Screen name="Business Owner" component={BOScreen} />
+        <Stack.Screen name="Business Owner Create" component={BOCreateMainScreen} />
         <Stack.Screen name="Business Owner More" component={BOMoreScreen} />
+        <Stack.Screen name="Business Owner All Listing" component={BOListingScreen} />
+        <Stack.Screen name="Business Owner Profile" component={BOProfilePage} />
         <Stack.Screen name="Customer Bookings" component={BOBookingScreen} />
+        <Stack.Screen name="Business Owner Listing" component={BONewListingScreen} />
+        <Stack.Screen name="Business Owner Edit Listing" component={BOEditListingScreen} />
+        <Stack.Screen name="Business Owner View Listing" component={BOSpecificListingScreen} />  
+        <Stack.Screen name="Business Owner Create Promotion" component={BOCreatePromotion} />  
+        <Stack.Screen name="Business Owner View Promotion" component={BOSpecificPromotionScreen} />  
+        <Stack.Screen name="Business Owner Promotion" component={BOPromotionScreen} /> 
+        <Stack.Screen name="Business Owner Edit Promotion" component={BOEditPromotionScreen} /> 
+        <Stack.Screen name="Business Owner View Review" component={BOSpecificReviewScreen} /> 
+        <Stack.Screen name="LOL Affiliate" component={BOLOLAffiliateScreen} /> 
+        <Stack.Screen name="LOL Affiliate Request" component={BOLOLAffiliateRequestScreen} /> 
+        <Stack.Screen name="Business Owner Shop" component={BOShop} /> 
+        <Stack.Screen name="Upcoming" component={BOUpcoming} /> 
+        <Stack.Screen name="Upcoming Listing" component={BOSpecificUpcomingListingScreen} />
+        <Stack.Screen name="Business Owner Search User" component={BOSearchUserScreen} /> 
+        <Stack.Screen name="Business Owner Insights" component={BOInsightsScreen} /> 
 
         <Stack.Screen name="Contact Us" component={CUScreen} />
         <Stack.Screen name="Privacy & Support" component={PSScreen} />
