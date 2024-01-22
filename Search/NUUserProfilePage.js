@@ -166,8 +166,6 @@ const ViewNUUserProfilePage = ({ route }) => {
           <View style={styles.profileInfo}>
             <View style={styles.usernameContainer}>
               <Text style={styles.username}>{userId} </Text>
-              {/* Verified user icon */}
-              <MaterialIcons name="verified" size={20} color="#030D45" />
             </View>
 
             {/* Follow button */}

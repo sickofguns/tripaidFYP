@@ -70,7 +70,7 @@ const UserSignUpScreen = ({ route }) => {
   
     console.log('Policy: ', policy);
     closeDealsModal();
-    navigation.navigate('User Registration');
+    navigation.navigate('About Yourself');
     setAgreeError(true);
   };  
 
