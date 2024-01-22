@@ -174,10 +174,17 @@ const UpgradetoLOLScreen = () => {
 
             {/* Added text */}
             <Text style={styles.congratsText}>
-                Congratulations on hitting 1000 followers!
+                Hey [username],
             </Text>
-            <Text style={styles.shareText}>
-                Share with us why you think you should be an LOL.
+            <Text style={styles.shareText}> 
+                Welcome aboard! 🌟 As a Local Opinion Leader, {'\n'}your voice matters. Tell us about yourself and {'\n'}why your 
+                perspective is a game-changer in your community. Share your passions, local insights, {'\n'}and what makes 
+                you a leader of opinion. {'\n\n'}
+
+                Let's make a difference together! 💬🌍 {'\n\n'}
+
+                Best, {'\n'}
+                TripAid Team.
             </Text>
             <Text style={styles.reviewText}>
                 *Application will be reviewed.

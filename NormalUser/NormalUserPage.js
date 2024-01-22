@@ -370,8 +370,8 @@ const renderContent = () => {
     return (
       <View style={styles.postsContainer}>
         {trails.map((trail, index) => (
-                    <View key={trail.id} style={styles.instagramPostContainer}>
-                <Image style={styles.postImage} source={trail.imageUrl}/>
+                        <TouchableOpacity key={trail.id} style={styles.instagramPostContainer} onPress={handleViewTrail}>
+                        <Image style={styles.postImage} source={trail.imageUrl}/>
                 <View style={styles.postContent}>
                     <View style={styles.userInfo}>
                         <Image style={styles.userAvatar} source={trail.pfp}/>
@@ -398,7 +398,7 @@ const renderContent = () => {
                     </TouchableOpacity>
 
                   </View>
-                  </View>
+                  </TouchableOpacity>
                 ))}
       </View>
     );
@@ -420,18 +420,45 @@ const renderContent = () => {
                   <View style={styles.dottedLine}></View>
                   <Text style={styles.dealsTop}>{promo.deals}</Text>
                   <Text style={styles.dealsMid}>{promo.type}</Text>
-                  <Text style={styles.dealsBot}>{promo.valid}</Text>
+                  <Text style={styles.dealsBot}>{promo.valid}{'\n'}*T&C applies</Text>
 
-                  {/* Redeem Button */}
-                  <TouchableOpacity
-                        style={styles.redeemButton}
-                        onPress={() => handleRedeem(promo.id, promo.deals)}
-                        disabled={redeemedStates[promo.id]} // Disable the button if it's already redeemed
-                      >
-                        <Text style={styles.redeemButtonText}>
-                          {redeemedStates[promo.id] ? 'Redeemed' : 'Collect'}
-                        </Text>
-                      </TouchableOpacity>
+                {/* Collect Button */}
+        <TouchableOpacity
+          style={styles.redeemButton}
+          onPress={() => handleCollect(promo.id, promo.deals)}
+          disabled={redeemedStates[promo.id] === 'redeemed'} // Disable if already redeemed
+        >
+          <Text style={styles.redeemButtonText}>
+            {redeemedStates[promo.id] === 'collected' ? 'Redeem' : 'Collect'}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Redeem Button (conditionally rendered) */}
+        {redeemedStates[promo.id] == 'collected' && (
+          <TouchableOpacity
+            style={styles.redeemButton}
+            onPress={() => confirmRedeem(promo.id, promo.deals)}
+            disabled={redeemedStates[promo.id] === 'redeemed'} // Disable if already redeemed
+          >
+            <Text style={styles.redeemButtonText}>
+              {redeemedStates[promo.id] === 'redeemed' ? 'Redeemed' : 'Redeem'}
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {redeemedStates[promo.id] == 'redeemed' && (
+          <TouchableOpacity
+            style={styles.redeemButton}
+            onPress={() => confirmRedeem(promo.id, promo.deals)}
+            disabled={redeemedStates[promo.id] === 'redeemed'} // Disable if already redeemed
+          >
+            <Text style={styles.redeemButtonText}>
+              {redeemedStates[promo.id] === 'redeemed' ? 'Redeemed' : 'Redeemed'}
+            </Text>
+          </TouchableOpacity>
+        )}
+
+
                 </View>
               ))}
             </View>
@@ -441,21 +468,60 @@ const renderContent = () => {
   }
 };
 
-const [redeemedStates, setRedeemedStates] = useState(false);
+const handleViewTrail = () => {
+  navigation.navigate('User Trail');
+};
 
-    const handleRedeem = (promoId, dealName) => {
-      if (!redeemedStates[promoId]) {
-        Alert.alert('Collection Success', `You have successfully collected ${dealName}.`);
-  
-        // Your redeem logic goes here
-  
-        // Update the state to mark this promo as redeemed
-        setRedeemedStates((prevStates) => ({
-          ...prevStates,
-          [promoId]: true,
-        }));
-      }
-    };
+
+const [redeemedStates, setRedeemedStates] = useState({});
+
+const handleCollect = (promoId, dealName) => {
+  // Your collect logic goes here
+
+  // Update the state to mark this promo as collected
+  setRedeemedStates((prevStates) => ({
+    ...prevStates,
+    [promoId]: 'collected',
+  }));
+
+  // Show success message
+  Alert.alert('Collection Success', `You have successfully collected ${dealName}.`);
+};
+
+const handleRedeem = (promoId, dealName) => {
+  // Your redeem logic goes here
+
+  // Update the state to mark this promo as redeemed
+  setRedeemedStates((prevStates) => ({
+    ...prevStates,
+    [promoId]: 'redeemed',
+  }));
+
+  // Show success message
+  Alert.alert('Redemption Success', `You have successfully redeemed ${dealName}.`);
+};
+
+const confirmRedeem = (promoId, dealName) => {
+  if (redeemedStates[promoId] === 'collected') {
+    Alert.alert(
+      'Confirm Redeeming',
+      `Are you sure you want to redeem ${dealName} today?`,
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => handleRedeem(promoId, dealName),
+          style: 'destructive',
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+};
+
 
   const [likedPosts, setLikedPosts] = useState(Array(posts.length).fill(false));
 
