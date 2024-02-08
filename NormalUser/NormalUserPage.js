@@ -15,7 +15,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from "../firebaseConfig";
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore/lite";
+import {
+  collection,
+  query,
+  getDocs,
+  where,
+  addDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore/lite";
 import { useAppContext } from "../AppContext";
 
 const NormalUserScreen = () => {
@@ -58,17 +66,26 @@ const NormalUserScreen = () => {
     try {
       // Reference to the "posts" collection
       const postsCollection = collection(db, "posts"); // Replace 'db' with your Firestore database reference
-
+  
+      // Query to fetch all posts
+      const postQuery = query(postsCollection);
+  
       // Get all documents in the "posts" collection
-      const querySnapshot = await getDocs(postsCollection);
-
-      // Format fetched posts into the desired structure
-      const formattedPosts = [];
+      const querySnapshot = await getDocs(postQuery);
+  
+      // Initialize arrays to store posts sorted by current region and the rest of the posts
+      const postsSortedByRegion = [];
+      const postsSortedByRegion2 = [];
+      const postsNotInRegion = [];
+  
+      // Iterate through the query snapshot
       querySnapshot.forEach((doc) => {
+        // Get the post data
         const postData = doc.data();
+        // Create a formatted post object
         const formattedPost = {
           id: doc.id, // Use the document ID as the post ID
-          imageUrl: postData.thumbnail || require("../assets/error.jpg") ,
+          imageUrl: postData.thumbnail || require("../assets/error.jpg"),
           pfp: require("../assets/pfp.png"),
           username: postData.username,
           timeposted: formatTimestamp(postData.created),
@@ -77,16 +94,27 @@ const NormalUserScreen = () => {
           likes: postData.likes,
           comments: postData.comments || [], // Use an empty array if comments field is missing
         };
-        formattedPosts.push(formattedPost);
-      });
+        // Check if the post's location matches the current region
+      if (formattedPost.location === currentRegion) {
+        postsSortedByRegion.push(formattedPost); // Add the post to the sorted array
+      } else if (formattedPost.location.includes(currentRegion)) {
+        postsSortedByRegion2.push(formattedPost); // Add the post to the sorted array 2
+      } else {
+        postsNotInRegion.push(formattedPost); // Add the post to the array of posts not in the region
+      }
+    });
 
+    // Concatenate the sorted posts and the rest of the posts
+    const allPosts = postsSortedByRegion.concat(postsSortedByRegion2, postsNotInRegion);
+  
       // Update state with the formatted posts
-      setPosts(formattedPosts);
+      setPosts(allPosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
       // Handle the error as needed
     }
   };
+  
 //////////////////////////////////////////////////////////////////////////////////// review
   const fetchReviews = async () => {
     try {
@@ -96,8 +124,11 @@ const NormalUserScreen = () => {
       // Get all documents in the "reviews" collection
       const querySnapshot = await getDocs(reviewsCollection);
 
-      // Format fetched reviews into the desired structure
-      const formattedReviews = [];
+       // Initialize arrays to store posts sorted by current region and the rest of the posts
+       const reviewsSortedByRegion = [];
+       const reviewsSortedByRegion2 = [];
+       const reviewNotInRegion = [];
+
       querySnapshot.forEach((doc) => {
         const reviewData = doc.data();
         const formattedReview = {
@@ -112,11 +143,21 @@ const NormalUserScreen = () => {
           description: reviewData.description,
           likes: reviewData.likes || 0,
         };
-        formattedReviews.push(formattedReview);
-      });
+        // Check if the location property exists and is not undefined
+        if (formattedReview.location === currentRegion) {
+          reviewsSortedByRegion.push(formattedReview); // Add the review to the beginning of the sorted array
+      } else if (formattedReview.location && formattedReview.location.includes(currentRegion)) {
+          reviewsSortedByRegion2.push(formattedReview); // Add the review to the sorted array 2
+      } else {
+          reviewNotInRegion.push(formattedReview); // Add the review to the array of reviews not in the region
+      }
+    });
+
+    // Concatenate the sorted posts and the rest of the posts
+    const allReviews = reviewsSortedByRegion.concat(reviewsSortedByRegion2, reviewNotInRegion); 
 
       // Update state with the formatted reviews
-      setReviews(formattedReviews);
+      setReviews(allReviews);
     } catch (error) {
       console.error("Error fetching reviews:", error);
       // Handle the error as needed
@@ -131,8 +172,11 @@ const NormalUserScreen = () => {
       // Get all documents in the "reviews" collection
       const querySnapshot = await getDocs(trailsCollection);
 
-      // Format fetched reviews into the desired structure
-      const formattedTrails = [];
+      // Initialize arrays to store posts sorted by current region and the rest of the posts
+      const trailsSortedByRegion = [];
+      const trailsSortedByRegion2 = [];
+      const trailsNotInRegion = [];
+
       querySnapshot.forEach((doc) => {
         const trailData = doc.data();
         const formattedTrail = {
@@ -146,13 +190,24 @@ const NormalUserScreen = () => {
           description: trailData.description,
           likes: trailData.likes || 0,
         };
-        formattedTrails.push(formattedTrail);
-      });
+
+         // Check if the post's location matches the current region
+      if (formattedTrail.location === currentRegion) {
+        trailsSortedByRegion.push(formattedTrail); // Add the post to the sorted array
+      } else if (formattedTrail.location.includes(currentRegion)) {
+        trailsSortedByRegion2.push(formattedTrail); // Add the post to the sorted array 2
+      } else {
+        trailsNotInRegion.push(formattedTrail); // Add the post to the array of posts not in the region
+      }
+    });
+
+    // Concatenate the sorted posts and the rest of the posts
+    const allTrails = trailsSortedByRegion.concat(trailsSortedByRegion2, trailsNotInRegion); 
 
       // Update state with the formatted reviews
-      setTrails(formattedTrails);
+      setTrails(allTrails);
     } catch (error) {
-      console.error("Error fetching reviews:", error);
+      console.error("Error fetching trails:", error);
       // Handle the error as needed
     }
   };
@@ -165,6 +220,7 @@ const NormalUserScreen = () => {
   }, []);
 
   ////////////////////////////////////////////////////////////////////////////////////location
+  const [currentRegion, setCurrentRegion] = useState(null);
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -186,8 +242,16 @@ const NormalUserScreen = () => {
         const street = address[0]?.name || "";
         const country = address[0]?.country || "";
 
-        // Set the location state with the obtained information
+        // Set the current location state with the obtained information
         setCurrentLocation(`${street}, ${country}`);
+
+        // Calculate region based on latitude and longitude
+        const latitude = locationData.coords.latitude;
+        const longitude = locationData.coords.longitude;
+        const region = calculateRegion(latitude, longitude);
+
+        // Set the current region state with the obtained information
+        setCurrentRegion(region);
       } catch (error) {
         console.error("Error fetching location:", error.message);
         // Handle the error as needed
@@ -196,6 +260,137 @@ const NormalUserScreen = () => {
 
     fetchLocation();
   }, []); // Empty dependency array to run the effect only once
+
+  // Function to calculate the region based on latitude and longitude
+  const calculateRegion = (latitude, longitude) => {
+    let region = "";
+  
+    if (
+      latitude >= regionBoundaries.north.minLat &&
+      latitude <= regionBoundaries.north.maxLat &&
+      longitude >= regionBoundaries.north.minLng &&
+      longitude <= regionBoundaries.north.maxLng
+    ) {
+      region = "North";
+    } else if (
+      latitude >= regionBoundaries.south.minLat &&
+      latitude <= regionBoundaries.south.maxLat &&
+      longitude >= regionBoundaries.south.minLng &&
+      longitude <= regionBoundaries.south.maxLng
+    ) {
+      region = "South";
+    } else if (
+      latitude >= regionBoundaries.east.minLat &&
+      latitude <= regionBoundaries.east.maxLat &&
+      longitude >= regionBoundaries.east.minLng &&
+      longitude <= regionBoundaries.east.maxLng
+    ) {
+      region = "East";
+    } else if (
+      latitude >= regionBoundaries.west.minLat &&
+      latitude <= regionBoundaries.west.maxLat &&
+      longitude >= regionBoundaries.west.minLng &&
+      longitude <= regionBoundaries.west.maxLng
+    ) {
+      region = "West";
+    } else if (
+      latitude >= regionBoundaries.northeast.minLat &&
+      latitude <= regionBoundaries.northeast.maxLat &&
+      longitude >= regionBoundaries.northeast.minLng &&
+      longitude <= regionBoundaries.northeast.maxLng
+    ) {
+      region = "Northeast";
+    } else if (
+      latitude >= regionBoundaries.northwest.minLat &&
+      latitude <= regionBoundaries.northwest.maxLat &&
+      longitude >= regionBoundaries.northwest.minLng &&
+      longitude <= regionBoundaries.northwest.maxLng
+    ) {
+      region = "Northwest";
+    } else if (
+      latitude >= regionBoundaries.southeast.minLat &&
+      latitude <= regionBoundaries.southeast.maxLat &&
+      longitude >= regionBoundaries.southeast.minLng &&
+      longitude <= regionBoundaries.southeast.maxLng
+    ) {
+      region = "Southeast";
+    } else if (
+      latitude >= regionBoundaries.southwest.minLat &&
+      latitude <= regionBoundaries.southwest.maxLat &&
+      longitude >= regionBoundaries.southwest.minLng &&
+      longitude <= regionBoundaries.southwest.maxLng
+    ) {
+      region = "Southwest";
+    } else if (
+      latitude >= regionBoundaries.central.minLat &&
+      latitude <= regionBoundaries.central.maxLat &&
+      longitude >= regionBoundaries.central.minLng &&
+      longitude <= regionBoundaries.central.maxLng
+    ) {
+      region = "Central";
+    }
+  
+    console.log(region);
+    return region;
+  };
+  
+  const regionBoundaries = {
+    north: {
+      minLat: 1.4185,
+      maxLat: 1.4702,
+      minLng: 103.8399,
+      maxLng: 103.8662,
+    },
+    south: {
+      minLat: 1.2476,
+      maxLat: 1.3362,
+      minLng: 103.8209,
+      maxLng: 103.8915,
+    },
+    east: {
+      minLat: 1.3147,
+      maxLat: 1.3512,
+      minLng: 103.9300,
+      maxLng: 103.9875,
+    },
+    west: {
+      minLat: 1.2855,
+      maxLat: 1.3906,
+      minLng: 103.6965,
+      maxLng: 103.7880,
+    },
+    northeast: {
+      minLat: 1.3606,
+      maxLat: 1.4191,
+      minLng: 103.8701,
+      maxLng: 103.9616,
+    },
+    northwest: {
+      minLat: 1.3355,
+      maxLat: 1.4191,
+      minLng: 103.7485,
+      maxLng: 103.8701,
+    },
+    southeast: {
+      minLat: 1.2460,
+      maxLat: 1.3217,
+      minLng: 103.9221,
+      maxLng: 103.9875,
+    },
+    southwest: {
+      minLat: 1.2460,
+      maxLat: 1.3351,
+      minLng: 103.6965,
+      maxLng: 103.8152,
+    },
+    central: {
+      minLat: 1.2913,
+      maxLat: 1.3502,
+      minLng: 103.8152,
+      maxLng: 103.8764,
+    },
+  }
+
 
   ////////////////////////////////////////////////////////////////////////////////////
 
