@@ -19,7 +19,7 @@ import { db, storage } from "../firebaseConfig"; // need call Storage from Fireb
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // need
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore/lite";
 import MapView, { Marker } from 'react-native-maps';
-
+import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import the necessary functions
 
 const LOLNewPostScreen = () => {
   const { user } = useAppContext();

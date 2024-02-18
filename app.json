@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "TripAid",
+    "name": "tripaid",
     "slug": "tripaid",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,10 +11,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.tripaid"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
@@ -26,13 +27,17 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-
-    "owner": "tripaid",
+    "extra": {
+      "eas": {
+        "projectId": "fbcb2637-f18e-40d3-acdb-e0e54234475e"
+      }
+    },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/f5bdcd92-37fc-420e-a32f-66ab748fd050"
-    }
+      "url": "https://u.expo.dev/d37d03b7-7c36-4743-9bd4-c706940045c1"
+    },
+    "owner": "tripaid"
   }
 }

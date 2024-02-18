@@ -419,7 +419,7 @@ const [socials, setSocials] = useState({}); // Initialize socials state with an 
   
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
-        const pfpURL = userData.pfp || require("../assets/pfp.png"); // If pfp doesn't exist, provide a default value
+        const pfpURL = userData.pfp; // If pfp doesn't exist, provide a default value
   
         // Update state with the profile picture URL
         setpfp(pfpURL);

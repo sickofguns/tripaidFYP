@@ -24,6 +24,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore/lite";
 import { useAppContext } from "../AppContext";
 
@@ -160,9 +161,11 @@ const NormalUserScreen = () => {
     });
 
           // In fetchReview function
-      await fetchReviewProfilePictures(reviewsSortedByRegion);
-      await fetchReviewProfilePictures(reviewsSortedByRegion2);
-      await fetchReviewProfilePictures(reviewNotInRegion);
+          await Promise.all([
+       fetchReviewProfilePictures(reviewsSortedByRegion),
+       fetchReviewProfilePictures(reviewsSortedByRegion2),
+       fetchReviewProfilePictures(reviewNotInRegion),
+          ]);
 
     // Concatenate the sorted posts and the rest of the posts
     const allReviews = reviewsSortedByRegion.concat(reviewsSortedByRegion2, reviewNotInRegion); 
@@ -213,9 +216,11 @@ const NormalUserScreen = () => {
     });
 
       // In fetchTrail function
-      await fetchTrailProfilePictures(trailsSortedByRegion);
-      await fetchTrailProfilePictures(trailsSortedByRegion2);
-      await fetchTrailProfilePictures(trailsNotInRegion);
+      await Promise.all([
+       fetchTrailProfilePictures(trailsSortedByRegion),
+       fetchTrailProfilePictures(trailsSortedByRegion2),
+       fetchTrailProfilePictures(trailsNotInRegion),
+      ]);
 
 
     // Concatenate the sorted posts and the rest of the posts
@@ -255,13 +260,13 @@ const NormalUserScreen = () => {
                 if (userData && userData.pfp) {
                     post.pfp = { uri: userData.pfp }; // Assign the pfp to the post object
                 } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
+ 
                     // Assign a default pfp or handle it based on your requirements
                     post.pfp = require("../assets/pfp.png"); // Provide default pfp source
                 }
             } else {
                 // Handle the case where user document doesn't exist
-                console.error(`User document with ID ${userId} does not exist.`);
+
                 // Assign a default pfp or handle it based on your requirements
                 post.pfp = require("../assets/pfp.png"); // Provide default pfp source
             }
@@ -290,13 +295,13 @@ const NormalUserScreen = () => {
                 if (userData && userData.pfp) {
                     trail.pfp = { uri: userData.pfp }; // Assign the pfp to the trail object
                 } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
+ 
                     // Assign a default pfp or handle it based on your requirements
                     trail.pfp = require("../assets/pfp.png"); // Provide default pfp source
                 }
             } else {
                 // Handle the case where user document doesn't exist
-                console.error(`User document with ID ${userId} does not exist.`);
+ 
                 // Assign a default pfp or handle it based on your requirements
                 trail.pfp = require("../assets/pfp.png"); // Provide default pfp source
             }
@@ -324,13 +329,13 @@ const fetchReviewProfilePictures = async (reviews) => {
                 if (userData && userData.pfp) {
                     review.pfp = { uri: userData.pfp }; // Assign the pfp to the review object
                 } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
+ 
                     // Assign a default pfp or handle it based on your requirements
                     review.pfp = require("../assets/pfp.png"); // Provide default pfp source
                 }
             } else {
                 // Handle the case where user document doesn't exist
-                console.error(`User document with ID ${userId} does not exist.`);
+ 
                 // Assign a default pfp or handle it based on your requirements
                 review.pfp = require("../assets/pfp.png"); // Provide default pfp source
             }
@@ -599,13 +604,13 @@ const fetchReviewProfilePictures = async (reviews) => {
                 if (userData && userData.pfp) {
                     promo.pfp = { uri: userData.pfp }; // Assign the pfp to the promotion object
                 } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
+ 
                     // Assign a default pfp or handle it based on your requirements
                     promo.pfp = require("../assets/pfp.png"); // Provide default pfp source
                 }
             } else {
                 // Handle the case where user document doesn't exist
-                console.error(`User document with ID ${userId} does not exist.`);
+ 
                 // Assign a default pfp or handle it based on your requirements
                 promo.pfp = require("../assets/pfp.png"); // Provide default pfp source
             }

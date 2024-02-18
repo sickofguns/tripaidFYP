@@ -13,6 +13,8 @@ import {
   deleteDoc,
   updateDoc,
   doc,
+  writeBatch,
+  getDoc,
 } from "firebase/firestore/lite";
 //ACCEPTING/REJECTING PAGE PENDING LIST  
 
@@ -190,27 +192,37 @@ const [BOCount, setBOCount] = useState();
       { cancelable: false }
     );
   };
-  
+
   const deleteUser = async (userId, lolUsername, collab) => {
     try {
+      const batch = writeBatch(db); // Initialize a batched write
+
       if (!collab) {
-        // If collab is false, update the database
-        const affiliationDocRef = doc(db, 'lolaffiliations', userId);
-  
-        // Update the user's affiliation status in the database
-        await updateDoc(affiliationDocRef, { collab: false, pending: false, reached: false });
-  
-        // Display success message or perform additional actions
-        Alert.alert('User Removed from Collaboration', `User ${lolUsername} removed from collaboration successfully.`);
+        // If collab is false, update the user's documents in both collections
+        const boAffiliationDocRef = doc(db, 'boaffiliations', userId);
+        const lolAffiliationDocRef = doc(db, 'lolaffiliations', userId);
+
+        // Update the document in boaffiliations collection if it exists
+        if ((await getDoc(boAffiliationDocRef)).exists()) {
+          batch.update(boAffiliationDocRef, { collab: false, pending: false, reached: false });
+        }
+
+        // Update the document in lolaffiliations collection if it exists
+        if ((await getDoc(lolAffiliationDocRef)).exists()) {
+          batch.update(lolAffiliationDocRef, { collab: false, pending: false, reached: false });
+        }
       }
-  
-      // Update local state
-      setUserList((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+
+      // Commit the batched write
+      await batch.commit();
+
+      // Display success message or perform additional actions
+      Alert.alert('User Removed from Collaboration', `User ${lolUsername} removed from collaboration successfully.`);
     } catch (error) {
       console.error('Error removing user from collaboration:', error);
       Alert.alert('Error', 'An error occurred while removing the user from collaboration.');
     }
-  };
+};
   
 
   const renderUserItem = ({ item }) => (

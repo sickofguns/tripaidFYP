@@ -13,6 +13,8 @@ import {
   deleteDoc,
   updateDoc,
   doc,
+  writeBatch,
+  getDoc,
 } from "firebase/firestore/lite";
 //ACCEPTING/REJECTING PAGE PENDING LIST  
 
@@ -125,17 +127,22 @@ const BORequestsScreen = () => {
       try {
         const allUsers = await fetchUsersFromDatabase('');
         const allUsers2 = await fetchUsersFromDatabase2('');
-        const unique = allUsers.filter(allUsers => !allUsers2.some(allUsers2 => allUsers2.personalUserId === allUsers.personalUserId));
 
-        const usersall = unique.concat(allUsers2);
+        // Filter out duplicates from allUsers2
+        const uniqueUsers2 = allUsers2.filter(user2 => !allUsers.some(user => user.businessUserId === user2.businessUserId));
 
-        setUserList(usersall);
-        setNoUserFound(usersall.length === 0);
-        setBOCount(usersall.length);
+        // Concatenate uniqueUsers2 with allUsers
+        const usersAll = allUsers.concat(uniqueUsers2);
+    
+        setUserList(usersAll);
+        setNoUserFound(usersAll.length === 0);
+        setBOCount(usersAll.length);
       } catch (error) {
         console.error('Error loading users:', error);
       }
     }
+    
+    
 
     // Fetch pending users when the component mounts
     fetchPendingUsersFromDatabase();
@@ -192,24 +199,36 @@ const [BOCount, setBOCount] = useState(0);
   
   const deleteUser = async (userId, businessUsername, collab) => {
     try {
+      const batch = writeBatch(db); // Initialize a batched write
+
       if (!collab) {
-        // If collab is false, update the database
-        const affiliationDocRef = doc(db, 'boaffiliations', userId);
-  
-        // Update the user's affiliation status in the database
-        await updateDoc(affiliationDocRef, { collab: false, pending: false, reached: false });
-  
-        // Display success message or perform additional actions
-        Alert.alert('User Removed from Collaboration', `User ${businessUsername} removed from collaboration successfully.`);
+        // If collab is false, update the user's documents in both collections
+        const boAffiliationDocRef = doc(db, 'boaffiliations', userId);
+        const lolAffiliationDocRef = doc(db, 'lolaffiliations', userId);
+
+        // Update the document in boaffiliations collection if it exists
+        if ((await getDoc(boAffiliationDocRef)).exists()) {
+          batch.update(boAffiliationDocRef, { collab: false, pending: false, reached: false });
+        }
+
+        // Update the document in lolaffiliations collection if it exists
+        if ((await getDoc(lolAffiliationDocRef)).exists()) {
+          batch.update(lolAffiliationDocRef, { collab: false, pending: false, reached: false });
+        }
       }
-  
-      // Update local state
-      setUserList((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+
+      // Commit the batched write
+      await batch.commit();
+
+      // Display success message or perform additional actions
+      Alert.alert('User Removed from Collaboration', `User ${businessUsername} removed from collaboration successfully.`);
     } catch (error) {
       console.error('Error removing user from collaboration:', error);
       Alert.alert('Error', 'An error occurred while removing the user from collaboration.');
     }
-  };
+};
+
+
   
 
   const renderUserItem = ({ item }) => (

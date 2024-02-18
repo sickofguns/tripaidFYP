@@ -24,6 +24,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore/lite";
 import { useAppContext } from "../AppContext";
 
@@ -33,314 +34,7 @@ const LOLScreen = () => {
   const [activeTab, setActiveTab] = useState("Posts"); // Track the active tab
   const [rerenderFlag, setRerenderFlag] = useState(false);
   // Assuming posts are fetched and stored in this array
-  //////////////////////////////////////////////////////////////////////////////////// post 
-  const [posts, setPosts] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [trails, setTrails] = useState([]);
-
-  const formatTimestamp = (timestamp) => {
-    try {
-      // Check if the timestamp is an object with seconds property
-      if (timestamp && timestamp.seconds) {
-        // Convert the seconds to milliseconds and create a Date object
-        const dateObject = new Date(timestamp.seconds * 1000);
-  
-        // Format the date
-        const options = {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        };
-  
-        return dateObject.toLocaleDateString(undefined, options);
-      } else {
-        console.log("Invalid timestamp format:", timestamp);
-        throw new Error('Invalid timestamp format');
-      }
-    } catch (error) {
-      console.error("Error parsing timestamp:", error);
-      return "Invalid Date";
-    }
-  };
-
-  const fetchPosts = async () => {
-    try {
-      // Reference to the "posts" collection
-      const postsCollection = collection(db, "posts"); // Replace 'db' with your Firestore database reference
-  
-      // Query to fetch all posts
-      const postQuery = query(postsCollection);
-  
-      // Get all documents in the "posts" collection
-      const querySnapshot = await getDocs(postQuery);
-  
-      // Initialize arrays to store posts sorted by current region and the rest of the posts
-      const postsSortedByRegion = [];
-      const postsSortedByRegion2 = [];
-      const postsNotInRegion = [];
-  
-      // Iterate through the query snapshot
-      querySnapshot.forEach((doc) => {
-        // Get the post data
-        const postData = doc.data();
-        // Create a formatted post object
-        const formattedPost = {
-          id: doc.id, // Use the document ID as the post ID
-          imageUrl: { uri: postData.thumbnail },
-          username: postData.username,
-          timeposted: formatTimestamp(postData.created),
-          location: postData.location,
-          caption: postData.description,
-          likes: postData.likes,
-          comments: postData.comments || [], // Use an empty array if comments field is missing
-          userId: postData.userId,
-        };
-        // Check if the post's location matches the current region
-      if (formattedPost.location === currentRegion) {
-        postsSortedByRegion.push(formattedPost); // Add the post to the sorted array
-      } else if (formattedPost.location.includes(currentRegion)) {
-        postsSortedByRegion2.push(formattedPost); // Add the post to the sorted array 2
-      } else {
-        postsNotInRegion.push(formattedPost); // Add the post to the array of posts not in the region
-      }
-    });
-
-     // Fetch profile pictures for the posts
-     await fetchProfilePictures(postsSortedByRegion);
-     await fetchProfilePictures(postsSortedByRegion2);
-     await fetchProfilePictures(postsNotInRegion);
-
-     // Concatenate the sorted posts and the rest of the posts
-     const allPosts = postsSortedByRegion.concat(postsSortedByRegion2, postsNotInRegion);
-  
-      // Update state with the formatted posts
-      setPosts(allPosts);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-      // Handle the error as needed
-    }
-  };
-  
-//////////////////////////////////////////////////////////////////////////////////// review
-  const fetchReviews = async () => {
-    try {
-      // Reference to the "reviews" collection
-      const reviewsCollection = collection(db, "reviews"); // Replace 'db' with your Firestore database reference
-
-      // Get all documents in the "reviews" collection
-      const querySnapshot = await getDocs(reviewsCollection);
-
-       // Initialize arrays to store posts sorted by current region and the rest of the posts
-       const reviewsSortedByRegion = [];
-       const reviewsSortedByRegion2 = [];
-       const reviewNotInRegion = [];
-
-      querySnapshot.forEach((doc) => {
-        const reviewData = doc.data();
-        const formattedReview = {
-          id: doc.id, // Use the document ID as the review ID
-          imageUrl: { uri: reviewData.thumbnail },
-          username: reviewData.username,
-          timeposted: formatTimestamp(reviewData.created),
-          location: reviewData.location,
-          business: reviewData.business,
-          title: reviewData.title,
-          description: reviewData.description,
-          likes: reviewData.likes || 0,
-          userId: reviewData.userId,
-        };
-        // Check if the location property exists and is not undefined
-        if (formattedReview.location === currentRegion) {
-          reviewsSortedByRegion.push(formattedReview); // Add the review to the beginning of the sorted array
-      } else if (formattedReview.location && formattedReview.location.includes(currentRegion)) {
-          reviewsSortedByRegion2.push(formattedReview); // Add the review to the sorted array 2
-      } else {
-          reviewNotInRegion.push(formattedReview); // Add the review to the array of reviews not in the region
-      }
-    });
-
-          // In fetchReview function
-      await fetchReviewProfilePictures(reviewsSortedByRegion);
-      await fetchReviewProfilePictures(reviewsSortedByRegion2);
-      await fetchReviewProfilePictures(reviewNotInRegion);
-
-    // Concatenate the sorted posts and the rest of the posts
-    const allReviews = reviewsSortedByRegion.concat(reviewsSortedByRegion2, reviewNotInRegion); 
-
-      // Update state with the formatted reviews
-      setReviews(allReviews);
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-      // Handle the error as needed
-    }
-  };
-  //////////////////////////////////////////////////////////////////////////////////// trail
-  const fetchTrail = async () => {
-    try {
-      // Reference to the "reviews" collection
-      const trailsCollection = collection(db, "trails"); // Replace 'db' with your Firestore database reference
-
-      // Get all documents in the "reviews" collection
-      const querySnapshot = await getDocs(trailsCollection);
-
-      // Initialize arrays to store posts sorted by current region and the rest of the posts
-      const trailsSortedByRegion = [];
-      const trailsSortedByRegion2 = [];
-      const trailsNotInRegion = [];
-
-      querySnapshot.forEach((doc) => {
-        const trailData = doc.data();
-        const formattedTrail = {
-          id: doc.id, // Use the document ID as the review ID
-          imageUrl: { uri: trailData.thumbnail },
-          username: trailData.username,
-          timeposted: formatTimestamp(trailData.created),
-          location: trailData.location,
-          title: trailData.title,
-          description: trailData.description,
-          likes: trailData.likes || 0,
-          userId: trailData.userId,
-        };
-
-         // Check if the post's location matches the current region
-      if (formattedTrail.location === currentRegion) {
-        trailsSortedByRegion.push(formattedTrail); // Add the post to the sorted array
-      } else if (formattedTrail.location.includes(currentRegion)) {
-        trailsSortedByRegion2.push(formattedTrail); // Add the post to the sorted array 2
-      } else {
-        trailsNotInRegion.push(formattedTrail); // Add the post to the array of posts not in the region
-      }
-    });
-
-      // In fetchTrail function
-      await fetchTrailProfilePictures(trailsSortedByRegion);
-      await fetchTrailProfilePictures(trailsSortedByRegion2);
-      await fetchTrailProfilePictures(trailsNotInRegion);
-
-
-    // Concatenate the sorted posts and the rest of the posts
-    const allTrails = trailsSortedByRegion.concat(trailsSortedByRegion2, trailsNotInRegion); 
-
-      // Update state with the formatted reviews
-      setTrails(allTrails);
-    } catch (error) {
-      console.error("Error fetching trails:", error);
-      // Handle the error as needed
-    }
-  };
-
-  useEffect(() => {
-    fetchReviews();
-    fetchPosts();
-    fetchTrail();
-    fetchPromos();
-  }, []);
-
-  //////////////////////////////////////////////////////////////////////////////////// pfp
-
-  const fetchProfilePictures = async (posts) => {
-    try {
-        for (const post of posts) {
-            const userId = post.userId;
-            if (!userId) {
-                console.error("User ID is missing in the post:", post);
-                continue; // Skip processing this post and move to the next one
-            }
-
-            const userDocRef = doc(db, "users", userId); // Reference to the user document
-            const userDocSnapshot = await getDoc(userDocRef);
-
-            if (userDocSnapshot.exists()) {
-                const userData = userDocSnapshot.data();
-                if (userData && userData.pfp) {
-                    post.pfp = { uri: userData.pfp }; // Assign the pfp to the post object
-                } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
-                    // Assign a default pfp or handle it based on your requirements
-                    post.pfp = require("../assets/pfp.png"); // Provide default pfp source
-                }
-            } else {
-                // Handle the case where user document doesn't exist
-                console.error(`User document with ID ${userId} does not exist.`);
-                // Assign a default pfp or handle it based on your requirements
-                post.pfp = require("../assets/pfp.png"); // Provide default pfp source
-            }
-        }
-    } catch (error) {
-        console.error("Error fetching profile pictures:", error);
-        // Handle the error as needed
-    }
-};
-
-  
-  const fetchTrailProfilePictures = async (trails) => {
-    try {
-        for (const trail of trails) {
-            const userId = trail.userId;
-            if (!userId) {
-                console.error("User ID is missing in the trail:", trail);
-                continue; // Skip processing this trail and move to the next one
-            }
-
-            const userDocRef = doc(db, "users", userId); // Reference to the user document
-            const userDocSnapshot = await getDoc(userDocRef);
-
-            if (userDocSnapshot.exists()) {
-                const userData = userDocSnapshot.data();
-                if (userData && userData.pfp) {
-                    trail.pfp = { uri: userData.pfp }; // Assign the pfp to the trail object
-                } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
-                    // Assign a default pfp or handle it based on your requirements
-                    trail.pfp = require("../assets/pfp.png"); // Provide default pfp source
-                }
-            } else {
-                // Handle the case where user document doesn't exist
-                console.error(`User document with ID ${userId} does not exist.`);
-                // Assign a default pfp or handle it based on your requirements
-                trail.pfp = require("../assets/pfp.png"); // Provide default pfp source
-            }
-        }
-    } catch (error) {
-        console.error("Error fetching trail profile pictures:", error);
-        // Handle the error as needed
-    }
-};
-
-const fetchReviewProfilePictures = async (reviews) => {
-    try {
-        for (const review of reviews) {
-            const userId = review.userId;
-            if (!userId) {
-                console.error("User ID is missing in the review:", review);
-                continue; // Skip processing this review and move to the next one
-            }
-
-            const userDocRef = doc(db, "users", userId); // Reference to the user document
-            const userDocSnapshot = await getDoc(userDocRef);
-
-            if (userDocSnapshot.exists()) {
-                const userData = userDocSnapshot.data();
-                if (userData && userData.pfp) {
-                    review.pfp = { uri: userData.pfp }; // Assign the pfp to the review object
-                } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
-                    // Assign a default pfp or handle it based on your requirements
-                    review.pfp = require("../assets/pfp.png"); // Provide default pfp source
-                }
-            } else {
-                // Handle the case where user document doesn't exist
-                console.error(`User document with ID ${userId} does not exist.`);
-                // Assign a default pfp or handle it based on your requirements
-                review.pfp = require("../assets/pfp.png"); // Provide default pfp source
-            }
-        }
-    } catch (error) {
-        console.error("Error fetching review profile pictures:", error);
-        // Handle the error as needed
-    }
-};
-////////////////////////////////////////////////////////////////////////////////////location
+  ////////////////////////////////////////////////////////////////////////////////////location
   const [currentRegion, setCurrentRegion] = useState(null);
 
   useEffect(() => {
@@ -513,7 +207,323 @@ const fetchReviewProfilePictures = async (reviews) => {
   }
 
 
-  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////// post 
+  const [posts, setPosts] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [trails, setTrails] = useState([]);
+
+  const formatTimestamp = (timestamp) => {
+    try {
+      // Check if the timestamp is an object with seconds property
+      if (timestamp && timestamp.seconds) {
+        // Convert the seconds to milliseconds and create a Date object
+        const dateObject = new Date(timestamp.seconds * 1000);
+  
+        // Format the date
+        const options = {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+  
+        return dateObject.toLocaleDateString(undefined, options);
+      } else {
+        console.log("Invalid timestamp format:", timestamp);
+        throw new Error('Invalid timestamp format');
+      }
+    } catch (error) {
+      console.error("Error parsing timestamp:", error);
+      return "Invalid Date";
+    }
+  };
+
+  const fetchPosts = async () => {
+    try {
+      // Reference to the "posts" collection
+      const postsCollection = collection(db, "posts");
+  
+      // Query to fetch all posts
+      const postQuery = query(postsCollection);
+  
+      // Get all documents in the "posts" collection
+      const querySnapshot = await getDocs(postQuery);
+  
+      // Initialize arrays to store posts sorted by current region and the rest of the posts
+      const postsSortedByRegion = [];
+      const postsSortedByRegion2 = [];
+      const postsNotInRegion = [];
+  
+      // Iterate through the query snapshot
+      querySnapshot.forEach((doc) => {
+        // Get the post data
+        const postData = doc.data();
+        // Create a formatted post object
+        const formattedPost = {
+          id: doc.id,
+          imageUrl: { uri: postData.thumbnail },
+          username: postData.username,
+          timeposted: formatTimestamp(postData.created),
+          location: postData.location,
+          caption: postData.description,
+          likes: postData.likes,
+          comments: postData.comments || [],
+          userId: postData.userId,
+        };
+  
+        // Check if the post's location matches the current region
+        if (formattedPost.location === currentRegion) {
+          postsSortedByRegion.push(formattedPost);
+        } else if (formattedPost.location.includes(currentRegion)) {
+          postsSortedByRegion2.push(formattedPost);
+        } else {
+          postsNotInRegion.push(formattedPost);
+        }
+      });
+  
+      // Fetch profile pictures for the posts
+      await Promise.all([
+        fetchProfilePictures(postsSortedByRegion),
+        fetchProfilePictures(postsSortedByRegion2),
+        fetchProfilePictures(postsNotInRegion),
+      ]);
+  
+      // Concatenate the sorted posts and the rest of the posts
+      const allPosts = postsSortedByRegion.concat(postsSortedByRegion2, postsNotInRegion);
+  
+      // Update state with the formatted posts
+      setPosts(allPosts);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      // Handle the error as needed
+    }
+  };
+  
+  
+//////////////////////////////////////////////////////////////////////////////////// review
+  const fetchReviews = async () => {
+    try {
+      // Reference to the "reviews" collection
+      const reviewsCollection = collection(db, "reviews"); // Replace 'db' with your Firestore database reference
+
+      // Get all documents in the "reviews" collection
+      const querySnapshot = await getDocs(reviewsCollection);
+
+       // Initialize arrays to store posts sorted by current region and the rest of the posts
+       const reviewsSortedByRegion = [];
+       const reviewsSortedByRegion2 = [];
+       const reviewNotInRegion = [];
+
+      querySnapshot.forEach((doc) => {
+        const reviewData = doc.data();
+        const formattedReview = {
+          id: doc.id, // Use the document ID as the review ID
+          imageUrl: { uri: reviewData.thumbnail },
+          username: reviewData.username,
+          timeposted: formatTimestamp(reviewData.created),
+          location: reviewData.location,
+          business: reviewData.business,
+          title: reviewData.title,
+          description: reviewData.description,
+          likes: reviewData.likes || 0,
+          userId: reviewData.userId,
+        };
+        // Check if the location property exists and is not undefined
+        if (formattedReview.location === currentRegion) {
+          reviewsSortedByRegion.push(formattedReview); // Add the review to the beginning of the sorted array
+      } else if (formattedReview.location && formattedReview.location.includes(currentRegion)) {
+          reviewsSortedByRegion2.push(formattedReview); // Add the review to the sorted array 2
+      } else {
+          reviewNotInRegion.push(formattedReview); // Add the review to the array of reviews not in the region
+      }
+    });
+
+          // In fetchReview function
+          await Promise.all([
+       fetchReviewProfilePictures(reviewsSortedByRegion),
+       fetchReviewProfilePictures(reviewsSortedByRegion2),
+       fetchReviewProfilePictures(reviewNotInRegion),
+          ]);
+
+    // Concatenate the sorted posts and the rest of the posts
+    const allReviews = reviewsSortedByRegion.concat(reviewsSortedByRegion2, reviewNotInRegion); 
+
+      // Update state with the formatted reviews
+      setReviews(allReviews);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      // Handle the error as needed
+    }
+  };
+  //////////////////////////////////////////////////////////////////////////////////// trail
+  const fetchTrail = async () => {
+    try {
+      // Reference to the "reviews" collection
+      const trailsCollection = collection(db, "trails"); // Replace 'db' with your Firestore database reference
+
+      // Get all documents in the "reviews" collection
+      const querySnapshot = await getDocs(trailsCollection);
+
+      // Initialize arrays to store posts sorted by current region and the rest of the posts
+      const trailsSortedByRegion = [];
+      const trailsSortedByRegion2 = [];
+      const trailsNotInRegion = [];
+
+      querySnapshot.forEach((doc) => {
+        const trailData = doc.data();
+        const formattedTrail = {
+          id: doc.id, // Use the document ID as the review ID
+          imageUrl: { uri: trailData.thumbnail },
+          username: trailData.username,
+          timeposted: formatTimestamp(trailData.created),
+          location: trailData.location,
+          title: trailData.title,
+          description: trailData.description,
+          likes: trailData.likes || 0,
+          userId: trailData.userId,
+        };
+        
+         // Check if the post's location matches the current region
+      if (formattedTrail.location === currentRegion) {
+        trailsSortedByRegion.push(formattedTrail); // Add the post to the sorted array
+      } else if (formattedTrail.location.includes(currentRegion)) {
+        trailsSortedByRegion2.push(formattedTrail); // Add the post to the sorted array 2
+      } else {
+        trailsNotInRegion.push(formattedTrail); // Add the post to the array of posts not in the region
+      }
+    });
+
+      // In fetchTrail function
+      await Promise.all([
+       fetchTrailProfilePictures(trailsSortedByRegion),
+       fetchTrailProfilePictures(trailsSortedByRegion2),
+       fetchTrailProfilePictures(trailsNotInRegion),
+      ]);
+
+
+    // Concatenate the sorted posts and the rest of the posts
+    const allTrails = trailsSortedByRegion.concat(trailsSortedByRegion2, trailsNotInRegion); 
+
+      // Update state with the formatted reviews
+      setTrails(allTrails);
+    } catch (error) {
+      console.error("Error fetching trails:", error);
+      // Handle the error as needed
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+    fetchPosts();
+    fetchTrail();
+    fetchPromos();
+  }, []);
+
+  //////////////////////////////////////////////////////////////////////////////////// pfp
+
+  const fetchProfilePictures = async (posts) => {
+    try {
+        for (const post of posts) {
+            const userId = post.userId;
+            if (!userId) {
+                console.error("User ID is missing in the post:", post);
+                continue; // Skip processing this post and move to the next one
+            }
+
+            const userDocRef = doc(db, "users", userId); // Reference to the user document
+            const userDocSnapshot = await getDoc(userDocRef);
+
+            if (userDocSnapshot.exists()) {
+                const userData = userDocSnapshot.data();
+                if (userData && userData.pfp) {
+                    post.pfp = { uri: userData.pfp }; // Assign the pfp to the post object
+                } else {
+ 
+                    // Assign a default pfp or handle it based on your requirements
+                    post.pfp = require("../assets/pfp.png"); // Provide default pfp source
+                }
+            } else {
+                // Handle the case where user document doesn't exist
+ 
+                // Assign a default pfp or handle it based on your requirements
+                post.pfp = require("../assets/pfp.png"); // Provide default pfp source
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching profile pictures:", error);
+        // Handle the error as needed
+    }
+};
+
+  
+  const fetchTrailProfilePictures = async (trails) => {
+    try {
+        for (const trail of trails) {
+            const userId = trail.userId;
+            if (!userId) {
+                console.error("User ID is missing in the trail:", trail);
+                continue; // Skip processing this trail and move to the next one
+            }
+
+            const userDocRef = doc(db, "users", userId); // Reference to the user document
+            const userDocSnapshot = await getDoc(userDocRef);
+
+            if (userDocSnapshot.exists()) {
+                const userData = userDocSnapshot.data();
+                if (userData && userData.pfp) {
+                    trail.pfp = { uri: userData.pfp }; // Assign the pfp to the trail object
+                } else {
+ 
+                    // Assign a default pfp or handle it based on your requirements
+                    trail.pfp = require("../assets/pfp.png"); // Provide default pfp source
+                }
+            } else {
+                // Handle the case where user document doesn't exist
+
+                // Assign a default pfp or handle it based on your requirements
+                trail.pfp = require("../assets/pfp.png"); // Provide default pfp source
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching trail profile pictures:", error);
+        // Handle the error as needed
+    }
+};
+
+const fetchReviewProfilePictures = async (reviews) => {
+    try {
+        for (const review of reviews) {
+            const userId = review.userId;
+            if (!userId) {
+                console.error("User ID is missing in the review:", review);
+                continue; // Skip processing this review and move to the next one
+            }
+
+            const userDocRef = doc(db, "users", userId); // Reference to the user document
+            const userDocSnapshot = await getDoc(userDocRef);
+
+            if (userDocSnapshot.exists()) {
+                const userData = userDocSnapshot.data();
+                if (userData && userData.pfp) {
+                    review.pfp = { uri: userData.pfp }; // Assign the pfp to the review object
+                } else {
+ 
+                    // Assign a default pfp or handle it based on your requirements
+                    review.pfp = require("../assets/pfp.png"); // Provide default pfp source
+                }
+            } else {
+                // Handle the case where user document doesn't exist
+ 
+                // Assign a default pfp or handle it based on your requirements
+                review.pfp = require("../assets/pfp.png"); // Provide default pfp source
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching review profile pictures:", error);
+        // Handle the error as needed
+    }
+};
+////////////////////////////////////////////////
 
   const navigation = useNavigation(); // Initialize the navigation object
 
@@ -599,13 +609,13 @@ const fetchReviewProfilePictures = async (reviews) => {
                 if (userData && userData.pfp) {
                     promo.pfp = { uri: userData.pfp }; // Assign the pfp to the promotion object
                 } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
+ 
                     // Assign a default pfp or handle it based on your requirements
                     promo.pfp = require("../assets/pfp.png"); // Provide default pfp source
                 }
             } else {
                 // Handle the case where user document doesn't exist
-                console.error(`User document with ID ${userId} does not exist.`);
+ 
                 // Assign a default pfp or handle it based on your requirements
                 promo.pfp = require("../assets/pfp.png"); // Provide default pfp source
             }

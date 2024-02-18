@@ -13,10 +13,11 @@ import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { db } from "../firebaseConfig";
-import { collection, deleteDoc, doc, addDoc, getDoc, updateDoc } from "firebase/firestore/lite";
+import { collection, deleteDoc, doc, addDoc, getDoc, updateDoc, where, query, getDocs } from "firebase/firestore/lite";
 import { useAppContext } from "../AppContext";
 
 const LOLSpecificItineraryScreen = ({ route }) => {
+  const { user } = useAppContext();
   const [currentLocation, setCurrentLocation] = useState("Loading..."); // Initialize with a loading message
   const [location, setLocation] = useState("");
   const { itinerary } = route.params || {};
@@ -230,6 +231,33 @@ const publishItineraryAsTrail = () => {
   );
 };
 
+const [pfp, setpfp] = useState(null);
+
+const fetchProfilePicture = async () => {
+  try {
+    const socialsCollection = collection(db, "users");
+    const socialQuery = query(socialsCollection, where("id", "==", user.id));
+    const querySnapshot = await getDocs(socialQuery);
+
+    if (!querySnapshot.empty) {
+      const userData = querySnapshot.docs[0].data();
+      const pfpURL = userData.pfp || require("../assets/pfp.png"); // If pfp doesn't exist, provide a default value
+
+      // Update state with the profile picture URL
+      setpfp(pfpURL);
+    } else {
+      console.log("No matching user found in the socials collection.");
+    }
+  } catch (error) {
+    console.error("Error fetching profile picture:", error);
+    // Handle the error as needed
+  }
+};
+
+// Call the fetchProfilePicture function when the component mounts
+useEffect(() => {
+  fetchProfilePicture();
+}, []);
 
   return (
     <View style={styles.container}>
@@ -249,10 +277,17 @@ const publishItineraryAsTrail = () => {
             </Text>
           </View>
           {/* Profile Picture Icon */}
-          <Image
-            source={require("../assets/pfp.png")}
-            style={styles.RightpfpContainer}
-          />
+          {user.pfp ? (
+              <Image
+                style={styles.RightpfpContainer}
+                source={{ uri: pfp }} // Use user.pfp if available
+                />
+            ) : (
+              <Image
+                style={styles.RightpfpContainer}
+                source={require("../assets/pfp.png")} // Provide default image source
+              />
+            )}
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>

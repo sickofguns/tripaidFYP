@@ -155,7 +155,7 @@ const ViewNUUserProfilePage = ({ route }) => {
                 if (userData && userData.pfp) {
                     post.pfp = { uri: userData.pfp }; // Assign the pfp to the post object
                 } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
+                     
                     // Assign a default pfp or handle it based on your requirements
                     post.pfp = require("../assets/pfp.png"); // Provide default pfp source
                 }
@@ -189,7 +189,7 @@ const fetchReviewProfilePictures = async (reviews) => {
                 if (userData && userData.pfp) {
                     review.pfp = { uri: userData.pfp }; // Assign the pfp to the review object
                 } else {
-                    console.error(`User document with ID ${userId} does not have a 'pfp' field.`);
+                     
                     // Assign a default pfp or handle it based on your requirements
                     review.pfp = require("../assets/pfp.png"); // Provide default pfp source
                 }
@@ -483,7 +483,7 @@ const [socials, setSocials] = useState({});
   
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
-        const pfpURL = userData.pfp || require("../assets/pfp.png"); // If pfp doesn't exist, provide a default value
+        const pfpURL = userData.pfp; // If pfp doesn't exist, provide a default value
   
         // Update state with the profile picture URL
         setpfp(pfpURL);

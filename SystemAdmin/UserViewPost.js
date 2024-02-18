@@ -110,46 +110,48 @@ const UserSpecificPostScreen = ({ route }) => {
   const posts = [post]
   const [likedPosts, setLikedPosts] = useState(Array(posts.length).fill(false));
 
-  const handleLike = async (index) => {
-    try {
-      const updatedLikes = [...likedPosts];
-      updatedLikes[index] = !updatedLikes[index];
-      setLikedPosts(updatedLikes);
-
-      // Save liked state to AsyncStorage
-      await AsyncStorage.setItem(`post_${post.id}`, JSON.stringify(updatedLikes));
-
-      const postsCollection = collection(db, "posts");
-      const postRef = doc(postsCollection, post.id);
-
-      // Update the like count in the Firestore document
-      const newLikeCount = updatedLikes[index] ? post.likes + 1 : Math.max(post.likes - 1, 0);
-      await updateDoc(postRef, {
-        likes: newLikeCount,
-      });
-    } catch (error) {
-      console.error("Error updating like:", error);
-      // Handle the error as needed
-    }
-  };
-
   useEffect(() => {
-    // Load liked state from AsyncStorage when component mounts
+    // Load liked state from AsyncStorage for each post when component mounts
     const loadLikedState = async () => {
       try {
-        const storedLikes = await AsyncStorage.getItem(`post_${post.id}`);
-        if (storedLikes) {
-          const parsedLikes = JSON.parse(storedLikes);
-          setLikedPosts(parsedLikes);
+        // Load liked state for posts
+        for (const post of posts) {
+          const storedLikes = await AsyncStorage.getItem(`post_${post.id}`);
+          if (storedLikes !== null) {
+            const parsedLikes = JSON.parse(storedLikes);
+            setLikedPosts((prevLikedPosts) => ({
+              ...prevLikedPosts,
+              [post.id]: parsedLikes,
+            }));
+          }
         }
       } catch (error) {
         console.error("Error loading liked state:", error);
-        // Handle the error as needed
       }
     };
-
+  
+    // Load liked state whenever posts state changes
     loadLikedState();
-  }, []); // Empty dependency array to run only on mount
+  }, [posts]);
+  
+  // Function to handle like/unlike for posts
+  const handleLike = async (index) => {
+    try {
+      const updatedPosts = [...posts];
+      updatedPosts[index].liked = !updatedPosts[index].liked;
+  
+      setLikedPosts(updatedPosts);
+      await AsyncStorage.setItem(`post_${posts[index].id}`, JSON.stringify(updatedPosts[index].liked));
+  
+      // Update like count in Firestore
+      const postRef = doc(collection(db, "posts"), posts[index].id);
+      const newLikeCount = updatedPosts[index].liked ? posts[index].likes + 1 : Math.max(posts[index].likes - 1, 0);
+      await updateDoc(postRef, { likes: newLikeCount });
+    } catch (error) {
+      console.error("Error updating like:", error);
+    }
+  };
+  
   
 
   // Define state to hold the comments for each post

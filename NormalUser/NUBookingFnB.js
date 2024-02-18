@@ -135,11 +135,7 @@ const NUFnBBookingScreen = () => {
 
   const [promo, setPromo] = useState("");
 
-  const isValidPromo = (promo) => {
-    // Your validation logic for promo code here
-    // For example, a simple check for a non-empty string
-    return /^$|^[0-9]+$/.test(promo); //numbers only / blanks
-  };
+
 
   const handlebooking = async () => {
     if (!selectedFNB || !place || !checkindate || !checkoutdate || !adults ) {
@@ -148,12 +144,7 @@ const NUFnBBookingScreen = () => {
         return;
     }
 
-// If promo is provided, validate it
-if (promo && !isValidPromo(promo)) {
-  // If the promo code is invalid, show an alert message and return early
-  Alert.alert("Invalid promo code. Please try again.");
-  return;
-}
+
       try {
         console.log("Location:", place);
         console.log("Checkin:", checkindate);
