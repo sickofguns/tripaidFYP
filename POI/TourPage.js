@@ -355,6 +355,84 @@ const fetchReviewProfilePictures = async (reviews) => {
         // Handle the error as needed
     }
 };
+//////////////////////////////////////////////////////////////////////////////////// promo
+const [promotions, setPromotions] = useState([]); 
+const fetchPromos = async () => {
+  try {
+    // Reference to the "posts" collection
+    const promoCollection = collection(db, "promos"); // Replace 'db' with your Firestore database reference
+    
+    const promoQuery = query(
+      promoCollection,
+      where("category", "==", 'Tours')
+    );
+
+    const querySnapshot = await getDocs(promoQuery);
+
+    // Format fetched reviews into the desired structure
+    const formattedPromos = [];
+    querySnapshot.forEach((doc) => {
+      const promoData = doc.data();
+      const formattedPromo = {
+        id: doc.id, // Use the document ID as the review ID
+        imageUrl: { uri: promoData.thumbnail },
+        title: promoData.title,
+        description: promoData.description,
+        promocode: promoData.promotion,
+        valid: formatTimestamp(promoData.valid),
+        userId: promoData.userId,
+        category: promoData.category,
+      };
+      formattedPromos.push(formattedPromo);
+    });
+
+    await fetchPromoProfilePictures(formattedPromos);
+
+    // Update state with the formatted reviews
+    setPromotions(formattedPromos);
+  } catch (error) {
+    console.error("Error fetching promo:", error);
+    // Handle the error as needed
+  }
+};
+
+const fetchPromoProfilePictures = async (promotions) => {
+  try {
+      for (const promo of promotions) {
+          const userId = promo.userId;
+          if (!userId) {
+              console.error("User ID is missing in the promotion:", promo);
+              continue; // Skip processing this promotion and move to the next one
+          }
+
+          const userDocRef = doc(db, "users", userId); // Reference to the user document
+          const userDocSnapshot = await getDoc(userDocRef);
+
+          if (userDocSnapshot.exists()) {
+              const userData = userDocSnapshot.data();
+              if (userData && userData.pfp) {
+                  promo.pfp = { uri: userData.pfp }; // Assign the pfp to the promotion object
+              } else {
+
+                  // Assign a default pfp or handle it based on your requirements
+                  promo.pfp = require("../assets/pfp.png"); // Provide default pfp source
+              }
+          } else {
+              // Handle the case where user document doesn't exist
+
+              // Assign a default pfp or handle it based on your requirements
+              promo.pfp = require("../assets/pfp.png"); // Provide default pfp source
+          }
+      }
+  } catch (error) {
+      console.error("Error fetching promotion profile pictures:", error);
+      // Handle the error as needed
+  }
+};
+
+useEffect(() => {
+fetchPromos();
+}, []);
   ////////////////////////////////////////////////////////////////////////////////////location
   const [currentRegion, setCurrentRegion] = useState(null);
 
@@ -731,8 +809,43 @@ const fetchReviewProfilePictures = async (reviews) => {
           ))}
         </View>
       );
-    } 
+    } else if (activeTab === "Promos") {
+      return (
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <MaterialIcons name="whatshot" size={30} color="#FB7E3C" />
+            <Text style={styles.modalHeaderText}>Exclusive Deals</Text>
+          </View>
+
+          <ScrollView>
+            <View style={styles.scrollContainerPromo}>
+                {promotions.map((promo) => (
+                  <TouchableOpacity
+                  key={promo.id}
+                  onPress={() => handleViewPromo(promo)}
+                  >
+                  <View style={styles.modalInnerContainer} key={promo.id}>
+                    <View style={styles.halfCircleLeft}></View>
+                    <View style={styles.halfCircleRight}></View>
+                    <Image source={promo.pfp} style={styles.dealsImage} />
+                    <View style={styles.dottedLine}></View>
+                    <Text style={styles.dealsTop}>{promo.title}</Text>
+                    <Text style={styles.dealsMid}>{promo.category}</Text>
+                    <Text style={styles.dealsBot}>Valid till: {promo.valid}{'\n'}*T&C applies</Text>
+                  </View>
+                  </TouchableOpacity>
+                ))}
+            </View>
+          </ScrollView>
+        </View>
+      );
+    }
   };
+
+  const handleViewPromo = (promo) => {
+    navigation.navigate('User Promotion', { promo });
+  };
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -917,6 +1030,16 @@ const { user } = useAppContext();
               onPress={() => setActiveTab("Trails")}
             >
               <Text style={styles.toggleButtonText}>Trails</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                activeTab === "Promos" && styles.activeButton,
+              ]}
+              onPress={() => setActiveTab("Promos")}
+            >
+              <Text style={styles.toggleButtonText}>Promotions</Text>
             </TouchableOpacity>
             
           </View>

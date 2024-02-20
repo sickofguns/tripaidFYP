@@ -50,8 +50,8 @@ const LOLMainBookingScreen = () => {
 
   const navigation = useNavigation(); // Initialize the navigation object
 
-  const handlePressAccomodation = () => {
-    navigation.navigate("LOL Booking Page - Accomodation"); // Navigate to SignUp screen on button press
+  const handlePressAccommodation = () => {
+    navigation.navigate("LOL Booking Page - Accommodation"); // Navigate to SignUp screen on button press
   };
   const handlePressFNB = () => {
     navigation.navigate("LOL Booking Page - Food & Beverage"); // Navigate to SignUp screen on button press
@@ -90,13 +90,13 @@ const LOLMainBookingScreen = () => {
             Booking Category
           </Text>
 
-          <TouchableOpacity onPress={handlePressAccomodation}>
+          <TouchableOpacity onPress={handlePressAccommodation}>
             <View style={styles.curvedContainer}>
               <Image
                 source={require("../assets/hospitality.jpg")}
                 style={styles.image}
               />
-              <Text style={styles.textBehindImage}>Accomodation</Text>
+              <Text style={styles.textBehindImage}>Accommodation</Text>
             </View>
           </TouchableOpacity>
 

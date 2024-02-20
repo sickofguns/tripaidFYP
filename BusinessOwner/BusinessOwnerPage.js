@@ -682,7 +682,7 @@ const fetchReviewProfilePictures = async (reviews) => {
             <TouchableOpacity
               key={trail.id}
               style={styles.instagramPostContainer}
-              onPress={handleViewTrail}
+              onPress={() => handleViewTrail(trail)}
             >
               <Image style={styles.postImage} source={trail.imageUrl} />
               <View style={styles.postContent}>
@@ -724,8 +724,8 @@ const fetchReviewProfilePictures = async (reviews) => {
     }
   };
 
-  const handleViewTrail = () => {
-    navigation.navigate("User Trail");
+  const handleViewTrail = (trail) => {
+    navigation.navigate("User Trail", { trail });
   };
 
   const [likedPosts, setLikedPosts] = useState(Array(posts.length).fill(false));

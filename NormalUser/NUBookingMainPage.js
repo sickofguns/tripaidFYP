@@ -50,8 +50,8 @@ const NUMainBookingScreen = () => {
 
   const navigation = useNavigation(); // Initialize the navigation object
 
-  const handlePressAccomodation = () => {
-    navigation.navigate("Normal User Booking Page - Accomodation"); // Navigate to SignUp screen on button press
+  const handlePressAccommodation = () => {
+    navigation.navigate("Normal User Booking Page - Accommodation"); // Navigate to SignUp screen on button press
   };
   const handlePressFNB = () => {
     navigation.navigate("Normal User Booking Page - Food & Beverage"); // Navigate to SignUp screen on button press
@@ -90,13 +90,13 @@ const NUMainBookingScreen = () => {
             Booking Category
           </Text>
 
-          <TouchableOpacity onPress={handlePressAccomodation}>
+          <TouchableOpacity onPress={handlePressAccommodation}>
             <View style={styles.curvedContainer}>
               <Image
                 source={require("../assets/hospitality.jpg")}
                 style={styles.image}
               />
-              <Text style={styles.textBehindImage}>Accomodation</Text>
+              <Text style={styles.textBehindImage}>Accommodation</Text>
             </View>
           </TouchableOpacity>
 

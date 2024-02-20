@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tripaid"
+      "package": "com.tripaid.fyp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

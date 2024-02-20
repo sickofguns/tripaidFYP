@@ -66,7 +66,7 @@ import ApplicationReceivedScreen from './NormalUser/ApplicationReceived';
 import NUBookingHistoryScreen from './NormalUser/NUBookingHistoryPage';
 import NUMainBookingScreen from './NormalUser/NUBookingMainPage';
 import NUBookingPaymentScreen from './NormalUser/NUBookingPaymentPage';
-import NUAccomodationBookingScreen from './NormalUser/NUBookingAccomodation';
+import NUAccommodationBookingScreen from './NormalUser/NUBookingAccomodation';
 import NUAttractionBookingScreen from './NormalUser/NUBookingAttraction';
 import NUTransportBookingScreen from './NormalUser/NUBookingTransport';
 import NULifestyleBookingScreen from './NormalUser/NUBookingLifestyle';
@@ -98,7 +98,7 @@ import LOLSpecificItineraryScreen from './LOL/LOLViewItinerary';
 import LOLEditItineraryScreen from './LOL/LOLEditItinerary';
 import LOLBookingHistoryScreen from './LOL/LOLBookingHistoryPage';
 import LOLMainBookingScreen from './LOL/LOLBookingMainPage';
-import LOLAccomodationBookingScreen from './LOL/LOLBookingAccomodation';
+import LOLAccommodationBookingScreen from './LOL/LOLBookingAccomodation';
 import LOLFnBBookingScreen from './LOL/LOLBookingFnB';
 import LOLAttractionBookingScreen from './LOL/LOLBookingAttraction';
 import LOLBookingPaymentScreen from './LOL/LOLBookingPaymentPage';
@@ -153,7 +153,7 @@ import SocialScreen from './Socials/Socials';
 //poi
 import LOLPOIScreen from './LOL/LOLPOIPage';
 import NUPOIScreen from './NormalUser/NUPOIPage';
-import AccomodationScreen from './POI/AccomodationPage';
+import AccommodationScreen from './POI/AccomodationPage';
 import FoodScreen from './POI/FoodPage';
 import AttractionsScreen from './POI/AttractionsPage';
 import RetailScreen from './POI/RetailPage';
@@ -239,7 +239,7 @@ export default function App() {
         <Stack.Screen name="Application Received" component={ApplicationReceivedScreen} />
         <Stack.Screen name="Normal User Booking History" component={NUBookingHistoryScreen} />
         <Stack.Screen name="Normal User Booking Page" component={NUMainBookingScreen} />
-        <Stack.Screen name="Normal User Booking Page - Accomodation" component={NUAccomodationBookingScreen} />
+        <Stack.Screen name="Normal User Booking Page - Accommodation" component={NUAccommodationBookingScreen} />
         <Stack.Screen name="Normal User Booking Page - Food & Beverage" component={NUFnBBookingScreen} />
         <Stack.Screen name="Normal User Booking Page - Attraction" component={NUAttractionBookingScreen} />
         <Stack.Screen name="Normal User Booking Page - Transport" component={NUTransportBookingScreen} />
@@ -273,7 +273,7 @@ export default function App() {
         <Stack.Screen name="LOL Edit Itinerary" component={LOLEditItineraryScreen} />
         <Stack.Screen name="LOL Booking History" component={LOLBookingHistoryScreen} />
         <Stack.Screen name="LOL Booking Page" component={LOLMainBookingScreen} />
-        <Stack.Screen name="LOL Booking Page - Accomodation" component={LOLAccomodationBookingScreen} />
+        <Stack.Screen name="LOL Booking Page - Accommodation" component={LOLAccommodationBookingScreen} />
         <Stack.Screen name="LOL Booking Page - Food & Beverage" component={LOLFnBBookingScreen} />
         <Stack.Screen name="LOL Booking Page - Attraction" component={LOLAttractionBookingScreen} />
         <Stack.Screen name="LOL Booking Payment Page" component={LOLBookingPaymentScreen} />
@@ -330,7 +330,7 @@ export default function App() {
 
         <Stack.Screen name="LOL POI" component={LOLPOIScreen} />
         <Stack.Screen name="Normal User POI" component={NUPOIScreen} />
-        <Stack.Screen name="POI - Accomodation" component={AccomodationScreen} />
+        <Stack.Screen name="POI - Accommodation" component={AccommodationScreen} />
         <Stack.Screen name="POI - Food" component={FoodScreen} />
         <Stack.Screen name="POI - Attractions" component={AttractionsScreen} />
         <Stack.Screen name="POI - Retail" component={RetailScreen} />

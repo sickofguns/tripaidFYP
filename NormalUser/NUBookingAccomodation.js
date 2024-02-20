@@ -19,7 +19,7 @@ import { useAppContext } from "../AppContext";
 import { db } from "../firebaseConfig";
 import { collection, addDoc, getDocs, where, query } from "firebase/firestore/lite";
 
-const NUAccomodationBookingScreen = () => {
+const NUAccommodationBookingScreen = () => {
   const { user } = useAppContext();
   const [currentLocation, setCurrentLocation] = useState("Loading..."); // Initialize with a loading message
   const [location, setLocation] = useState("");
@@ -118,7 +118,7 @@ const NUAccomodationBookingScreen = () => {
   };
 
   const [selectedAccommodation, setSelectedAccommodation] = useState(
-    "Select Accomodation"
+    "Select Accommodation"
   );
 
   const [place, setPlace] = useState("");
@@ -824,4 +824,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NUAccomodationBookingScreen;
+export default NUAccommodationBookingScreen;

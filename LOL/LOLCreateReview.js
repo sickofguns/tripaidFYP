@@ -185,27 +185,37 @@ const LOLCreateReviewScreen = () => {
   };
 
 
+  
 
   const handleImageSelection = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("Permission to access camera roll is required!");
-      return;
-    }
-
-    const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!pickerResult.cancelled) {
-      setThumbnail(pickerResult.uri);
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (permissionResult.granted === false) {
+        alert("Permission to access camera roll is required!");
+        return;
+      }
+  
+      const pickerResult = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!pickerResult.cancelled) {
+        setThumbnail(pickerResult.assets[0].uri); // Update the thumbnail state
+      }
+      
+      
+      
+    } catch (error) {
+      console.error("Error selecting image:", error);
+      // Handle error as needed
     }
   };
+  
+  
+  
 
   const handleDescriptionChange = (text) => {
     setDescription(text);
@@ -224,12 +234,12 @@ const LOLCreateReviewScreen = () => {
       const fetchData = async () => {
         try {
           switch (category) {
-            case "Accomodation":
+            case "Accommodation":
             case "Food":
             case "Attraction":
             case "Tours":
             case "Retail":
-            case "Lifestyle":
+            case "Wellness":
             case "Transport":
             case "Events":
               const fetchedData = await fetchDataByCategory(category);
@@ -375,7 +385,7 @@ const LOLCreateReviewScreen = () => {
             <Text style={styles.titleText}>Category</Text>
 
             <View style={styles.OptionsContainer}>
-              {renderCategoryOption("Accomodation")}
+              {renderCategoryOption("Accommodation")}
               {renderCategoryOption("Food")}
               {renderCategoryOption("Retail")}
               {renderCategoryOption("Tours")}
@@ -383,7 +393,7 @@ const LOLCreateReviewScreen = () => {
             <View style={styles.OptionsContainer}>
               {renderCategoryOption("Attraction")}
               {renderCategoryOption("Transport")}
-              {renderCategoryOption("Lifestyle")}
+              {renderCategoryOption("Wellness")}
               {renderCategoryOption("Events")}
 
             </View>
@@ -429,21 +439,20 @@ const LOLCreateReviewScreen = () => {
               style={styles.thumbnailBox}
               onPress={handleImageSelection}
             >
-              {thumbnail ? (
-                <Image
-                  source={{ uri: thumbnail }}
-                  style={styles.thumbnailImage}
-                />
-              ) : (
-                <>
-                  <View style={styles.addIcon}>
-                    <Text style={styles.imageplus}>+</Text>
-                  </View>
-                  <Text style={styles.addImageText}>
-                    Add image for thumbnail
-                  </Text>
-                </>
-              )}
+              {thumbnail && typeof thumbnail === 'string' ? (
+  <Image
+    source={{ uri: thumbnail }}
+    style={styles.thumbnailImage}
+  />
+) : (
+  <>
+    <View style={styles.addIcon}>
+      <Text style={styles.imageplus}>+</Text>
+    </View>
+    <Text style={styles.addImageText}>Add thumbnail to post</Text>
+  </>
+)}
+
             </TouchableOpacity>
           </View>
 

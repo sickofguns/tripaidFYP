@@ -43,8 +43,8 @@ const LOLPOIScreen = () => {
   }, []); // Empty dependency array to run the effect only once
       const navigation = useNavigation(); // Initialize the navigation object
 
-    const handleAccomodation = () => {
-        navigation.navigate('POI - Accomodation');
+    const handleAccommodation = () => {
+        navigation.navigate('POI - Accommodation');
     }
     const handleFood = () => {
         navigation.navigate('POI - Food');
@@ -99,7 +99,7 @@ const LOLPOIScreen = () => {
   );
 
   const categories = [
-    { id: 1, onPress: () => handleAccomodation('Accomodation'), image: require('../assets/hospitality.jpg'), category: 'Accomodation' },
+    { id: 1, onPress: () => handleAccommodation('Accommodation'), image: require('../assets/hospitality.jpg'), category: 'Accommodation' },
     { id: 2, onPress: () => handleFood('Food'), image: require('../assets/fnb.jpg'), category: 'Food' },
     { id: 3, onPress: () => handleAttractions('Attraction'), image: require('../assets/snr.jpg'), category: 'Attraction' },
     { id: 4, onPress: () => handleRetail('Retail'), image: require('../assets/retail.jpg'), category: 'Shopping' },

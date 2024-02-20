@@ -5,7 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { db } from "../firebaseConfig";
-import { collection, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore/lite";
+import { collection, getDocs, updateDoc, deleteDoc, doc, getDoc, addDoc } from "firebase/firestore/lite";
 import { useAppContext } from "../AppContext";
 
 const UserSpecificTrailScreen = ({ route }) => {
@@ -106,6 +106,112 @@ const handledelete = async () => {
       
     const trails = [trail];
 
+
+    
+/////////////////////////////////////////////////////////////////////////// publish as trail 
+
+const [isAdmin, setIsAdmin] = useState(false);
+const [isBusiness, setIsBusiness] = useState(false);
+
+  useEffect(() => {
+    // Check if the current user is an admin
+    setIsAdmin(user === null);
+    setIsBusiness(user.type === 'business');
+  });
+
+
+// Function to handle the "Save as Itinerary" button
+const handleSaveAsItinerary = async () => {
+  try {
+    // Fetch the specific trail data from the database
+    const trailSnapshot = await getDoc(
+      doc(collection(db, "trails"), trail.id)
+    );
+    const trailData = trailSnapshot.data();
+
+    // Check if the trail data exists and has the required properties
+    if (
+      trailData &&
+      trailData.location &&
+      trailData.category &&
+      trailData.title &&
+      trailData.thumbnail &&
+      trailData.description &&
+      trailData.userId
+    ) {
+      // Display confirmation alert
+      Alert.alert(
+        "Save Trail as Itinerary",
+        "Do you want to save this trail as your own itinerary?",
+        [
+          {
+            text: "No",
+            style: "cancel",
+          },
+          {
+            text: "Yes",
+            onPress: async () => {
+              // Logic to save trail as itinerary
+              await saveTrailAsItinerary(trailData);
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      throw new Error("Invalid trail data. Missing required properties.");
+    }
+  } catch (error) {
+    console.error("Error handling save as itinerary:", error);
+    // Handle other errors as needed
+  }
+};
+
+// Function to save a trail as an itinerary for the current user
+const saveTrailAsItinerary = async (trailData) => {
+  try {
+    // Add a new document to the itineraries collection with the trail data
+    const newItineraryDocRef = await addDoc(collection(db, "itineraries"), {
+      userId: user.id, // Assuming user represents the current user and has an id property
+      username: user.username,
+      location: trailData.location,
+      category: trailData.category,
+      title: trailData.title,
+      thumbnail: trailData.thumbnail,
+      description: trailData.description,
+      created: new Date(),
+      trail: true, // This is a new itinerary, not a trail
+      // Add other fields you want to store in the itinerary document
+    });
+
+    // Log the ID of the newly added itinerary document
+    console.log("New Itinerary Document ID:", newItineraryDocRef.id);
+
+    // Show success message
+    Alert.alert(
+      "Success",
+      "Trail saved as itinerary successfully",
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            // Navigate back after success message
+            navigation.goBack();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  } catch (error) {
+    console.error("Error saving trail as itinerary:", error);
+    // Handle other errors as needed
+  }
+};
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -150,6 +256,12 @@ const handledelete = async () => {
                             </View>
                         ))}
                     </ScrollView>
+
+                   {!isAdmin && !isBusiness && (
+                      <TouchableOpacity style={styles.createButton} onPress={handleSaveAsItinerary}>
+                        <Text style={styles.createButtonText}>Save to Itinerary</Text>
+                      </TouchableOpacity>
+                    )}
               
                 <Text style={{ marginBottom: 45 }}>&copy; 2024 TripAid</Text>
 

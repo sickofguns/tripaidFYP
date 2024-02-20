@@ -167,7 +167,7 @@ const handleChangePassword = async () => {
       });
   
       if (!pickerResult.cancelled) {
-        setpfp(pickerResult.uri);
+        setpfp(pickerResult.assets[0].uri);
       }
     };
 
@@ -295,9 +295,10 @@ const handleChangePassword = async () => {
                         onPress={handleChangeProfilePicture}
                     >
                         <Image
-                        source={pfp ? { uri: pfp } : require("../assets/pfp.png")}
+                        source={pfp && typeof pfp === 'string' ? { uri: pfp } : require("../assets/pfp.png")}
                         style={styles.profileImage}
                         />
+
                     </TouchableOpacity>
 
                     {/* Button to trigger profile picture change */}

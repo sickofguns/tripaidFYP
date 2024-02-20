@@ -186,7 +186,7 @@ const NUNewPostScreen = () => {
     setDescription(text);
   };
 
-  const categories = ['Accomodation', 'Food', 'Attraction', 'Shopping', 'Lifestyle', 'Transport', 'Tours', 'Events']; // Add your POI categories here
+  const categories = ['Accommodation', 'Food', 'Attraction', 'Shopping', 'Lifestyle', 'Transport', 'Tours', 'Events']; // Add your POI categories here
   const locations = ['North', 'South', 'East', 'West', 'Central', 'North-East', 'North-West', 'South-East', 'South-West'];
 
   const [pfp, setpfp] = useState(null);
@@ -289,19 +289,20 @@ const NUNewPostScreen = () => {
               style={styles.thumbnailBox}
               onPress={handleImageSelection}
             >
-              {thumbnail ? (
-                <Image
-                  source={{ uri: thumbnail }}
-                  style={styles.thumbnailImage}
-                />
-              ) : (
-                <>
-                  <View style={styles.addIcon}>
-                    <Text style={styles.imageplus}>+</Text>
-                  </View>
-                  <Text style={styles.addImageText}>Add image to post</Text>
-                </>
-              )}
+              {thumbnail && typeof thumbnail === 'string' ? (
+  <Image
+    source={{ uri: thumbnail }}
+    style={styles.thumbnailImage}
+  />
+) : (
+  <>
+    <View style={styles.addIcon}>
+      <Text style={styles.imageplus}>+</Text>
+    </View>
+    <Text style={styles.addImageText}>Add thumbnail to post</Text>
+  </>
+)}
+
             </TouchableOpacity>
           </View>
 

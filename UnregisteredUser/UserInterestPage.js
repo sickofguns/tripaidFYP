@@ -45,7 +45,7 @@ const UserInterestScreen = ({route}) => {
   }, []); // Empty dependency array to run the effect only once
       const navigation = useNavigation(); // Initialize the navigation object
     const [selectedInterests, setSelectedInterests] = useState([]);
-    const [isAccomodationSelected, setIsAccomodationSelected] = useState(false); // hospitality
+    const [isAccommodationSelected, setIsAccommodationSelected] = useState(false); // hospitality
     const [isFoodSelected, setIsFoodSelected] = useState(false); // fnb
     const [isAttractionsSelected, setIsAttractionsSelected] = useState(false); // snr
     const [isShoppingSelected, setIsShoppingSelected] = useState(false); // retail
@@ -87,8 +87,8 @@ const UserInterestScreen = ({route}) => {
       }
         // Update the respective interest's selection state
       switch (interest) {
-        case 'Accomodation':
-          setIsAccomodationSelected(!isSelected);
+        case 'Accommodation':
+          setIsAccommodationSelected(!isSelected);
           break;
         case 'Food':
           setIsFoodSelected(!isSelected);
@@ -130,10 +130,10 @@ const UserInterestScreen = ({route}) => {
                 <Text style={styles.OtherselectText}>Select your interest!</Text>
 
                 <TouchableOpacity
-                  onPress={() => handleInterestSelect('Accomodation')}
+                  onPress={() => handleInterestSelect('Accommodation')}
                   style={[
                     styles.curvedContainer,
-                    { backgroundColor: isAccomodationSelected ? '#0A2753' : 'transparent' }, // Adjust color based on selection
+                    { backgroundColor: isAccommodationSelected ? '#0A2753' : 'transparent' }, // Adjust color based on selection
                   ]}
                 >        
                 <View>
@@ -141,7 +141,7 @@ const UserInterestScreen = ({route}) => {
                     source={require('../assets/hospitality.jpg')}
                     style={styles.image}
                     />
-                    <Text style={styles.textBehindImage}>Accomodation</Text>
+                    <Text style={styles.textBehindImage}>Accommodation</Text>
                 </View>
                 </TouchableOpacity>
 

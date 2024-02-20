@@ -21,7 +21,7 @@ import { collection, addDoc, getDocs, where, query } from "firebase/firestore/li
 
 
 
-const LOLAccomodationBookingScreen = () => {
+const LOLAccommodationBookingScreen = () => {
   const { user } = useAppContext();
   const [currentLocation, setCurrentLocation] = useState("Loading..."); // Initialize with a loading message
   const [location, setLocation] = useState("");
@@ -120,7 +120,7 @@ const LOLAccomodationBookingScreen = () => {
   };
 
   const [selectedAccommodation, setSelectedAccommodation] = useState(
-    "Select Accomodation"
+    "Select Accommodation"
   );
 
   const [place, setPlace] = useState("");
@@ -827,4 +827,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LOLAccomodationBookingScreen;
+export default LOLAccommodationBookingScreen;

@@ -134,7 +134,7 @@ const LOLCreateItineraryScreen = () => {
     });
 
     if (!pickerResult.cancelled) {
-      setThumbnail(pickerResult.uri);
+      setThumbnail(pickerResult.assets[0].uri);
     }
   };
 
@@ -147,7 +147,7 @@ const LOLCreateItineraryScreen = () => {
   const [place, setPlace] = useState("");
   const [category, setCategory] = useState("");
 
-    const categories = ['Accomodation', 'Food', 'Attraction', 'Shopping', 'Lifestyle', 'Transport', 'Tours', 'Events']; // Add your POI categories here
+    const categories = ['Accommodation', 'Food', 'Attraction', 'Shopping', 'Lifestyle', 'Transport', 'Tours', 'Events']; // Add your POI categories here
   const locations = ['North', 'South', 'East', 'West', 'Central', 'North-East', 'North-West', 'South-East', 'South-West'];
 
   const [pfp, setpfp] = useState(null);
@@ -265,21 +265,20 @@ const LOLCreateItineraryScreen = () => {
               style={styles.thumbnailBox}
               onPress={handleImageSelection}
             >
-              {thumbnail ? (
-                <Image
-                  source={{ uri: thumbnail }}
-                  style={styles.thumbnailImage}
-                />
-              ) : (
-                <>
-                  <View style={styles.addIcon}>
-                    <Text style={styles.imageplus}>+</Text>
-                  </View>
-                  <Text style={styles.addImageText}>
-                    Add image for thumbnail
-                  </Text>
-                </>
-              )}
+              {thumbnail && typeof thumbnail === 'string' ? (
+  <Image
+    source={{ uri: thumbnail }}
+    style={styles.thumbnailImage}
+  />
+) : (
+  <>
+    <View style={styles.addIcon}>
+      <Text style={styles.imageplus}>+</Text>
+    </View>
+    <Text style={styles.addImageText}>Add thumbnail to post</Text>
+  </>
+)}
+
             </TouchableOpacity>
           </View>
 

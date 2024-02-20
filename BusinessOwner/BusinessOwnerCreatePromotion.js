@@ -160,7 +160,7 @@ const BOCreatePromotion = () => {
     });
 
     if (!pickerResult.cancelled) {
-      setThumbnail(pickerResult.uri);
+      setThumbnail(pickerResult.assets[0].uri);
     }
   };
 
@@ -297,19 +297,20 @@ const BOCreatePromotion = () => {
               style={styles.thumbnailBox}
               onPress={handleImageSelection}
             >
-              {thumbnail ? (
-                <Image
-                  source={{ uri: thumbnail }}
-                  style={styles.thumbnailImage}
-                />
-              ) : (
-                <>
-                  <View style={styles.addIcon}>
-                    <Text style={styles.imageplus}>+</Text>
-                  </View>
-                  <Text style={styles.addImageText}>Add thumbnail to post</Text>
-                </>
-              )}
+              {thumbnail && typeof thumbnail === 'string' ? (
+  <Image
+    source={{ uri: thumbnail }}
+    style={styles.thumbnailImage}
+  />
+) : (
+  <>
+    <View style={styles.addIcon}>
+      <Text style={styles.imageplus}>+</Text>
+    </View>
+    <Text style={styles.addImageText}>Add thumbnail to post</Text>
+  </>
+)}
+
             </TouchableOpacity>
           </View>
 

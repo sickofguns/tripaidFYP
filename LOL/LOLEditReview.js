@@ -173,7 +173,7 @@ const LOLEditReviewScreen = ({ route }) => {
         });
 
         if (!pickerResult.cancelled) {
-            setThumbnail(pickerResult.uri);
+            setThumbnail(pickerResult.assets[0].uri);
         }
     };
       
@@ -194,7 +194,7 @@ const LOLEditReviewScreen = ({ route }) => {
         const fetchData = async () => {
           try {
             switch (category) {
-              case "Accomodation":
+              case "Accommodation":
               case "Food":
               case "Attraction":
               case "Tours":
@@ -343,7 +343,7 @@ const LOLEditReviewScreen = ({ route }) => {
             <Text style={styles.titleText}>Category</Text>
 
             <View style={styles.OptionsContainer}>
-              {renderCategoryOption("Accomodation")}
+              {renderCategoryOption("Accommodation")}
               {renderCategoryOption("Food")}
               {renderCategoryOption("Retail")}
               {renderCategoryOption("Tours")}
@@ -397,21 +397,20 @@ const LOLEditReviewScreen = ({ route }) => {
               style={styles.thumbnailBox}
               onPress={handleImageSelection}
             >
-              {thumbnail ? (
-                <Image
-                  source={{ uri: thumbnail }}
-                  style={styles.thumbnailImage}
-                />
-              ) : (
-                <>
-                  <View style={styles.addIcon}>
-                    <Text style={styles.imageplus}>+</Text>
-                  </View>
-                  <Text style={styles.addImageText}>
-                    Add image for thumbnail
-                  </Text>
-                </>
-              )}
+              {thumbnail && typeof thumbnail === 'string' ? (
+  <Image
+    source={{ uri: thumbnail }}
+    style={styles.thumbnailImage}
+  />
+) : (
+  <>
+    <View style={styles.addIcon}>
+      <Text style={styles.imageplus}>+</Text>
+    </View>
+    <Text style={styles.addImageText}>Add thumbnail to post</Text>
+  </>
+)}
+
             </TouchableOpacity>
           </View>
 
